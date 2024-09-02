@@ -1,0 +1,10 @@
+#ifndef DEADLOCK_SIMULATOR_TESTBASICFUNCTIONALITY_H
+#define DEADLOCK_SIMULATOR_TESTBASICFUNCTIONALITY_H
+
+
+class testBasicFunctionality {
+
+};
+
+
+#endif
