@@ -2,48 +2,56 @@
 #include "Resource.h"
 #include "Process.h"
 
-Resource::Resource(int id) : id(id), owner(nullptr) {}
+Resource::Resource(int id, int units) : id(id), units(units), owner(nullptr) {}
 
-bool Resource::requestResource(Process* requestor) {
-    if (!owner) {
+bool Resource::requestResource(Process* requestor, int requestedUnits) {
+    if (units >= requestedUnits) {
+        units -= requestedUnits;
         owner = requestor;
+        for (int i = 0; i < requestedUnits; i++) {
+            requestor->addResource(this);
+        }
         return true;
     } else {
-        addToWaitingList(requestor);
+        addToWaitingList(requestor, requestedUnits);
         return false;
     }
 }
 
-// Resource.cpp
-void Resource::releaseResource() {
-    if (!waitingList.empty()) {
-        auto it = waitingList.begin();
-        Process* nextOwner = *it;
-        waitingList.erase(it);
+void Resource::addToWaitingList(Process* process, int neededUnits) {
+    waitingList.emplace_back(process, neededUnits);
+}
 
-        owner = nextOwner;
-        owner->addResource(this);
-    } else {
-        owner = nullptr;
+void Resource::releaseResources(int releasedUnits) {
+    units += releasedUnits;
+
+    auto it = waitingList.begin();
+    while (it != waitingList.end() && units >= it->second) {
+        Process* proc = it->first;
+        int need = it->second;
+        if (requestResource(proc, need)) {
+            it = waitingList.erase(it);
+        } else {
+            ++it;
+        }
     }
 }
 
-void Resource::addToWaitingList(Process* process) {
-    waitingList.insert(process);
+void Resource::printStatus() const {
+    std::cout << "Resource ID: " << id << ", Units: " << units << ", Owner: ";
+    if (owner) {
+        std::cout << owner->getId();
+    } else {
+        std::cout << "None";
+    }
+    std::cout << ", Waiting Queue: ";
+    for (const auto& pair : waitingList) {
+        std::cout << pair.first->getId() << " ";
+    }
+    std::cout << std::endl;
 }
 
-bool Resource::isAvailable() const {
-    return owner == nullptr;
-}
 
 Process* Resource::getOwner() const {
     return owner;
-}
-
-void Resource::printWaitingQueue() const {
-    std::cout << "Waiting Queue for Resource " << id << ": ";
-    for (const auto& proc : waitingList) {
-        std::cout << proc->getId() << " ";
-    }
-    std::cout << std::endl;
 }

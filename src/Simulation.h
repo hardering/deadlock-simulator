@@ -17,6 +17,8 @@ public:
     void addProcess(Process* proc);
     void addResource(Resource* res);
     void removeProcess(Process* proc);
+    void initializeSimpleDeadlock();
+    void initializeComplexDeadlock();
 };
 
 #endif

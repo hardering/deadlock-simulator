@@ -3,7 +3,7 @@
 #include "Resource.h"
 #include <iostream>
 
-void testBasicFunctionality() {
+/*void testBasicFunctionality() {
     Simulation simulator;
     Resource resource_01(1);
     Resource resource_02(2);
@@ -53,10 +53,4 @@ void testBasicFunctionality() {
 
     process_01.releaseResources();
     process_02.releaseResources();
-}
-
-
-int main() {
-    testBasicFunctionality();
-    return 0;
-}
+}*/

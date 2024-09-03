@@ -8,18 +8,18 @@ class Process;
 class Resource {
 private:
     int id;
+    int units;
     Process* owner;
-    std::set<Process*> waitingList;
+    std::vector<std::pair<Process*, int>> waitingList;
 
 public:
-    explicit Resource(int id);
-    bool requestResource(Process* requestor);
-    void releaseResource();
-    void addToWaitingList(Process* process);
-    bool isAvailable() const;
+    explicit Resource(int id, int units);
+    bool requestResource(Process* requestor, int requestedUnits);
+    void releaseResources(int releasedUnits);
+    void addToWaitingList(Process* process, int neededUnits);
     Process* getOwner() const;
-    void printWaitingQueue() const;
     int getId() const { return id; }
+    void printStatus() const;
 };
 
 #endif

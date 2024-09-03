@@ -10,19 +10,20 @@ class Simulation;
 class Process {
 private:
     int id;
+    std::vector<std::tuple<Resource*, int, int>> resources;
     std::vector<Resource*> allocatedResources;
     Simulation* simulation;
 
 public:
-    Process(int id, Simulation* sim);
+    Process(int id, Simulation* sim, std::vector<std::tuple<Resource*, int, int>> resRequirements);
     int getId() const { return id; }
-    bool requestResource(Resource *resource);
+    void requestResources();
     bool holdsResource(Resource *resource);
     void releaseResources();
     void performRollback();
     void terminate();
-    void printHoldingResources();
     void addResource(Resource *resource);
+    void printStatus() const;
 };
 
-#endif // PROCESS_H
+#endif
