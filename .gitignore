@@ -1,2 +1,7 @@
 .idea
 /cmake-build-debug
+cmake-build-qt/
+cmake_install.cmake
+/.cmake
+/.qt
+/Testing
