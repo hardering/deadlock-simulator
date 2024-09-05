@@ -1,61 +1,92 @@
 #include "Window.h"
-#include <QGraphicsTextItem>
 #include <QFont>
 #include <QPen>
-
-static const QPen outlinePen(Qt::black, 2);
-static const QBrush noBrush(Qt::transparent);
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QTableWidget>
+#include <QLabel>
+#include <QHeaderView>
+#include <QGraphicsProxyWidget>
+#include <QGroupBox>
 
 Window::Window(QWidget *parent) : QWidget(parent) {
     setWindowTitle("Deadlock Simulator");
-    resize(800, 600);
-    setStyleSheet("background-color: white");
+    resize(800, 300);
 
-    scene = new QGraphicsScene(this);
-    view = new QGraphicsView(scene, this);
-    view->setGeometry(0, 0, 800, 600);
+    auto *tablesGroup = new QGroupBox();
+    auto *main = new QHBoxLayout(this);
+
+
+    layout = new QHBoxLayout(tablesGroup);
+
+    main->addWidget(tablesGroup, 1);
+
+    QWidget * interactionContainer = setInteractionElements();
+    interactionContainer->setMinimumSize(200, 200);
+    main->addWidget(interactionContainer, 1);
+
+    createEmptyTable();
 }
 
-void Window::centerAndPlaceText(QGraphicsItem *item, const QString &text, int xOffset) {
-    QGraphicsTextItem *label = scene->addText(text, QFont("Arial", 16));
-    label->setDefaultTextColor(Qt::black);
+QTableWidget *Window::createTable(const QString &title, const QStringList &headers) {
+    auto *label = new QLabel(title);
+    label->setAlignment(Qt::AlignCenter);
 
-    QRectF itemBounds = item->boundingRect();
-    QRectF labelBounds = label->boundingRect();
+    auto *table = new QTableWidget(0, headers.size());
+    table->setHorizontalHeaderLabels(headers);
+    table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-    QPointF labelPosition(
-            xOffset + (itemBounds.width() - labelBounds.width()) / 2,
-            (itemBounds.height() - labelBounds.height()) / 2
-    );
-    label->setPos(item->pos() + labelPosition);
+    auto *tableLayout = new QVBoxLayout();
+    tableLayout->addWidget(label);
+    tableLayout->addWidget(table);
+    tableLayout->addStretch(1);
+
+    layout->addLayout(tableLayout);
+
+    return table;
 }
 
-void Window::addResourceGraphics(int id) {
-    int rectWidth = 100;
-    int gap = 100;
-    int xPosition = resourceCount * (rectWidth + gap);
-
-    QGraphicsRectItem *rectangle = scene->addRect(xPosition, 0, rectWidth, 50, outlinePen, noBrush);
-    centerAndPlaceText(rectangle, "R" + QString::number(id), xPosition);
-
-    resourceCount++;
+void Window::createEmptyTable() {
+    resourceTable = createTable("Resources", {"Id", "Units"});
 }
 
-void Window::addProcessGraphics(int id) {
-    int circleWidth = 50;
-    int gap = 100;
-    int xPosition = processCount * (circleWidth + gap);
-
-    QGraphicsEllipseItem *circle = scene->addEllipse(xPosition, 100, circleWidth, circleWidth, outlinePen, noBrush);
-    centerAndPlaceText(circle, "P" + QString::number(id), xPosition);
-
-    processCount++;
+void Window::updateResourcesTable(QTableWidget *table, const QList<QString> &data) {
+    int row = table->rowCount();
+    table->insertRow(row);
+    for (int i = 0; i < data.size(); ++i) {
+        table->setItem(row, i, new QTableWidgetItem(data[i]));
+    }
 }
 
-void Window::handleResourceAdded(int id) {
-    addResourceGraphics(id);
+QWidget *Window::setInteractionElements() {
+    auto *interactionElementsContainer = new QWidget;
+    auto *interactionElementsLayout = new QVBoxLayout(interactionElementsContainer);
+
+
+    generateDeadlockSituationButton = new QPushButton("Preset", this);
+    generateDeadlockSituationButton->setStyleSheet(buttonStyle());
+    interactionElementsLayout->addWidget(generateDeadlockSituationButton);
+    interactionElementsLayout->addStretch();
+
+    connect(generateDeadlockSituationButton, &QPushButton::clicked, this, &Window::generateDeadlockSituationRequest);
+    return interactionElementsContainer;
 }
 
-void Window::handleProcessAdded(int id) {
-    addProcessGraphics(id);
+QPushButton *Window::getPresetButton() const {
+    return generateDeadlockSituationButton;
 }
+
+QString Window::buttonStyle() const {
+    return "QPushButton {"
+           "  font: 14px;"
+           "  border: 1px solid black;"
+           "  padding: 6px;"
+           "  background-color: white;"
+           "  color: black;"
+           "}"
+           "QPushButton:hover {"
+           "  background-color: silver;"
+           "}";
+}
+

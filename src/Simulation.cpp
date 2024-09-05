@@ -1,17 +1,17 @@
 #include "Simulation.h"
 #include <iostream>
 
-Simulation::Simulation(QObject *parent) : QObject(parent) {
+Simulation::Simulation(Window *windowInstance, QObject *parent) : QObject(parent), window(windowInstance) {
+    connect(this, &Simulation::updateResourcesTable, window, &Window::updateResourcesTable);
+    connect(window, &Window::generateDeadlockSituationRequest, this, &Simulation::initializeProcessWithResources);
 }
 
 void Simulation::addProcess(Process *process) {
     processes.push_back(process);
-    emit processAdded(process->getId());
 }
 
 void Simulation::addResource(Resource *resource) {
     resources.push_back(resource);
-    emit resourceAdded(resource->getId());
 }
 
 void Simulation::removeProcess(Process *process) {
@@ -19,9 +19,9 @@ void Simulation::removeProcess(Process *process) {
 }
 
 void Simulation::initializeProcessWithResources() {
-    auto *resA = new Resource(1, 3);
-    auto *resB = new Resource(2, 2);
-    auto *resC = new Resource(3, 2);
+    auto *resA = new Resource(1, 1);
+    auto *resB = new Resource(2, 5);
+    auto *resC = new Resource(3, 3);
 
     auto *proc1 = new Process(1, this, {{resA, 0, 2},
                                         {resB, 1, 0},
@@ -39,6 +39,14 @@ void Simulation::initializeProcessWithResources() {
     resA->printStatus();
     resB->printStatus();
     resC->printStatus();
+
+
+    emit updateResourcesTable(window->resourceTable,
+                              {QString::number(resA->getId()), QString::number(resA->getUnits())});
+    emit updateResourcesTable(window->resourceTable,
+                              {QString::number(resB->getId()), QString::number(resB->getUnits())});
+    emit updateResourcesTable(window->resourceTable,
+                              {QString::number(resC->getId()), QString::number(resC->getUnits())});
 
     addProcess(proc1);
     addProcess(proc2);
@@ -58,5 +66,4 @@ void Simulation::initializeProcessWithResources() {
     resB->printStatus();
     resC->printStatus();
 }
-
 

@@ -5,6 +5,7 @@
 #include <QObject>
 #include "Process.h"
 #include "Resource.h"
+#include "../qt/Window.h"
 
 class Simulation : public QObject {
 Q_OBJECT
@@ -12,9 +13,10 @@ Q_OBJECT
 private:
     std::vector<Process *> processes;
     std::vector<Resource *> resources;
+    Window *window;
 
 public:
-    explicit Simulation(QObject *parent = nullptr);
+    explicit Simulation(Window *window, QObject *parent = nullptr);
 
     void addProcess(Process *process);
 
@@ -24,11 +26,11 @@ public:
 
     void initializeProcessWithResources();
 
+private:
+
 signals:
 
-    void resourceAdded(int id);
-
-    void processAdded(int id);
+    void updateResourcesTable(QTableWidget *table, const QList<QString> &data);
 };
 
 #endif
