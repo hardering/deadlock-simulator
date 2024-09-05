@@ -3,7 +3,7 @@
 
 Simulation::Simulation(Window *windowInstance, QObject *parent) : QObject(parent), window(windowInstance) {
     connect(this, &Simulation::updateResourcesTable, window, &Window::updateResourcesTable);
-    connect(window, &Window::generateDeadlockSituationRequest, this, &Simulation::initializeProcessWithResources);
+    connect(window, &Window::generateDeadlockSituationRequest, this, &Simulation::generateDeadlockSituation);
 }
 
 void Simulation::addProcess(Process *process) {
@@ -18,7 +18,7 @@ void Simulation::removeProcess(Process *process) {
     processes.erase(std::remove(processes.begin(), processes.end(), process), processes.end());
 }
 
-void Simulation::initializeProcessWithResources() {
+void Simulation::generateDeadlockSituation() {
     auto *resA = new Resource(1, 1);
     auto *resB = new Resource(2, 5);
     auto *resC = new Resource(3, 3);
@@ -39,7 +39,6 @@ void Simulation::initializeProcessWithResources() {
     resA->printStatus();
     resB->printStatus();
     resC->printStatus();
-
 
     emit updateResourcesTable(window->resourceTable,
                               {QString::number(resA->getId()), QString::number(resA->getUnits())});

@@ -24,7 +24,7 @@ public:
 
     void removeProcess(Process *process);
 
-    void initializeProcessWithResources();
+    void generateDeadlockSituation();
 
 private:
 
