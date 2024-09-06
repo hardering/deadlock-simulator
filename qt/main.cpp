@@ -1,10 +1,9 @@
 #include <QApplication>
 #include "Window.h"
-#include "Simulation.h"
 
 // Include the test function
 void testBasicFunctionality();
-
+/*
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
@@ -16,4 +15,4 @@ int main(int argc, char *argv[]) {
     window.show();
 
     return QApplication::exec();
-}
+}*/

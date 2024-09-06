@@ -1,45 +1,66 @@
-#ifndef PROCESS_H
-#define PROCESS_H
+// Process.h
 
+#pragma once
+#include <iostream>
 #include <vector>
-#include <tuple>
 #include "Resource.h"
-#include "Simulation.h"
-
-class Simulation;
 
 class Process {
 private:
-    int id;
-    std::vector<std::tuple<Resource *, int, int>> resources;
-    std::vector<Resource *> allocatedResources;
-    Simulation *simulation;
-    std::vector<int> waitingResourceIds;
+    int pid;
+    int priority;  // Priorität des Prozesses
+    std::vector<int> maxResources;
+    std::vector<int> allocatedResources;
+    std::vector<int> neededResources;
 
 public:
-    Process(int id, Simulation *sim, std::vector<std::tuple<Resource *, int, int>> resRequirements);
+    // Konstruktor für den Prozess mit Priorität
+    Process(int id, const std::vector<int>& maxRes, int prio)
+            : pid(id), priority(prio), maxResources(maxRes), allocatedResources(maxRes.size(), 0), neededResources(maxRes) {}
 
-    int getId() const { return id; }
+    // Ressourcenanforderungen stellen
+    bool requestResources(const std::vector<int>& request, std::vector<Resource>& resources) {
+        for (size_t i = 0; i < request.size(); ++i) {
+            if (request[i] > neededResources[i] || !resources[i].allocate(request[i])) {
+                return false;
+            }
+        }
+        for (size_t i = 0; i < request.size(); ++i) {
+            allocatedResources[i] += request[i];
+            neededResources[i] -= request[i];
+        }
+        return true;
+    }
 
-    QString getAllHeldResourceIds() const;
+    // Ressourcen freigeben
+    void releaseResources(std::vector<Resource>& resources) {
+        for (size_t i = 0; i < allocatedResources.size(); ++i) {
+            resources[i].release(allocatedResources[i]);
+            neededResources[i] += allocatedResources[i];
+            allocatedResources[i] = 0;
+        }
+    }
 
-    void requestResources();
+    // Überprüfen, ob der Prozess fertig ist
+    bool isFinished() const {
+        for (int need : neededResources) {
+            if (need > 0) return false;
+        }
+        return true;
+    }
 
-    bool holdsResource(Resource *resource);
+    // Zugriff auf die Prozess-ID
+    int getPID() const {
+        return pid;
+    }
 
-    void releaseResources();
+    // Zugriff auf die Priorität des Prozesses
+    int getPriority() const {
+        return priority;
+    }
 
-    void performRollback();
-
-    void terminate();
-
-    void addResource(Resource *resource);
-
-    void printStatus() const;
-
-    QString getWaitingResourceIdsAsString() const;
-
-    const std::vector<std::tuple<Resource *, int, int>> &getResourceRequirements() const; // Add this line
+    // Zugriff auf die benötigten Ressourcen
+    const std::vector<int>& getNeededResources() const {
+        return neededResources;
+    }
 };
-
-#endif
