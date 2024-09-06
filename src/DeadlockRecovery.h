@@ -6,10 +6,12 @@
 #include "Resource.h"
 #include "DeadlockDetector.h"
 
+class DeadlockDetector;
+
 class DeadlockRecovery {
 
 public:
-    DeadlockDetector detector;
+    DeadlockDetector *detector;
 
     void interruptProcess(int pid, std::vector<Process> &processes, std::vector<Resource> &resources);
 

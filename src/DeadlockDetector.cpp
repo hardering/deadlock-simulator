@@ -1,4 +1,5 @@
 #include "DeadlockDetector.h"
+#include "DeadlockRecovery.h"
 
 bool DeadlockDetector::isSystemInSafeState(std::vector<Process> &processes, std::vector<Resource> &resources) {
     std::vector<int> work(resources.size());
@@ -32,4 +33,13 @@ bool DeadlockDetector::canProcessComplete(const Process &process, const std::vec
                        [&work, &neededResources, idx = 0](int need) mutable {
                            return need <= work[idx++];
                        });
+}
+
+void DeadlockDetector::checkForDeadlock(DeadlockRecovery &recovery, const std::vector<Process> &processes,
+                                        const std::vector<Resource> &resources) {
+    if (recovery.detectDeadlock(processes, resources)) {
+        std::cout << "Deadlock detected.\n";
+    } else {
+        std::cout << "No deadlock detected.\n";
+    }
 }

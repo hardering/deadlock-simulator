@@ -20,9 +20,8 @@ find_package(Qt6 COMPONENTS
 find_package(OpenGL REQUIRED)
 
 add_executable(deadlock_simulator
-#[[        qt/main.cpp
         qt/Window.h
-        qt/Window.cpp]]
+        qt/Window.cpp
         src/main.cpp
         src/Process.cpp
         src/Process.h
@@ -36,10 +35,16 @@ add_executable(deadlock_simulator
         tests/BankersAlgorithmTest.h
         tests/DeadlockTest.cpp
         tests/DeadlockTest.h
+        tests/DeadlockAvoidanceTest.cpp
+        tests/DeadlockAvoidanceTest.h
+        tests/DeadlockRecoveryTest.cpp
+        tests/DeadlockRecoveryTest.h
         src/DeadlockRecovery.cpp
         src/DeadlockRecovery.h
         src/DeadlockAvoidance.cpp
         src/DeadlockAvoidance.h
+        src/Deadlock.cpp
+        src/Deadlock.h
 )
 
 target_link_libraries(deadlock_simulator

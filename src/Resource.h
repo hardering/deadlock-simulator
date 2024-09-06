@@ -17,4 +17,7 @@ public:
     int getAvailableInstances() const;
 
     int getTotalInstances() const;
+
+    void printResources(const std::vector<Resource> &resources);
+
 };

@@ -13,6 +13,11 @@
 class Window : public QWidget {
 Q_OBJECT
 
+private:
+    QHBoxLayout *layout;
+    QPushButton *generateDeadlockSituationButton;
+    QPushButton *resetButton;
+    
 public:
     QTableWidget *defaultTable;
 
@@ -27,11 +32,7 @@ public:
     void createEmptyTable();
 
     bool isTableFilled(QTableWidget *table);
-    
-private:
-    QHBoxLayout *layout;
-    QPushButton *generateDeadlockSituationButton;
-    QPushButton *resetButton;
+
 
 public slots:
 

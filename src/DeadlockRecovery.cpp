@@ -43,6 +43,6 @@ void DeadlockRecovery::resolveDeadlock(std::vector<Process> &processes, std::vec
 }
 
 bool DeadlockRecovery::detectDeadlock(const std::vector<Process> &processes, const std::vector<Resource> &resources) {
-    return !detector.isSystemInSafeState(const_cast<std::vector<Process> &>(processes),
-                                         const_cast<std::vector<Resource> &>(resources));
+    return !detector->isSystemInSafeState(const_cast<std::vector<Process> &>(processes),
+                                          const_cast<std::vector<Resource> &>(resources));
 }
