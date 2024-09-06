@@ -1,5 +1,3 @@
-// main.cpp
-
 #include <iostream>
 #include <vector>
 #include "BankersAlgorithm.h"
@@ -20,6 +18,27 @@ void checkForDeadlock(DeadlockRecovery& recovery, const std::vector<Process>& pr
         std::cout << "Deadlock detected.\n";
     } else {
         std::cout << "No deadlock detected.\n";
+    }
+}
+
+void createDeadlock(std::vector<Process>& processes, std::vector<Resource>& resources) {
+    // Deadlock scenario: processes requesting resources leading to a deadlock
+    std::vector<int> request1 = {2, 1, 2};  // Process 0 requests resources
+    std::vector<int> request2 = {2, 1, 1};  // Process 1 requests resources
+    std::vector<int> request3 = {1, 1, 2};  // Process 2 requests resources
+    std::vector<int> request4 = {1, 1, 1};  // Process 3 requests resources
+
+    // Allocate resources that will cause a deadlock
+    processes[0].requestResources(request1, resources);  // Process 0 allocated
+    processes[1].requestResources(request2, resources);  // Process 1 allocated
+    processes[2].requestResources(request3, resources);  // Process 2 allocated
+
+    std::cout << "\nInitial allocation leads to deadlock. Current resource state:\n";
+    printResources(resources);
+
+    // Process 3 tries to request resources, causing deadlock
+    if (!processes[3].requestResources(request4, resources)) {
+        std::cout << "Deadlock detected: Process 3 cannot allocate resources.\n";
     }
 }
 
@@ -70,24 +89,8 @@ int main() {
     processes[2].releaseResources(resources);
     processes[3].releaseResources(resources);
 
-    // Deadlock scenario: processes requesting resources leading to a deadlock
-    std::vector<int> request1 = {2, 1, 2};  // Process 0 requests resources
-    std::vector<int> request2 = {2, 1, 1};  // Process 1 requests resources
-    std::vector<int> request3 = {1, 1, 2};  // Process 2 requests resources
-    std::vector<int> request4 = {1, 1, 1};  // Process 3 requests resources
-
-    // Allocate resources that will cause a deadlock
-    processes[0].requestResources(request1, resources);  // Process 0 allocated
-    processes[1].requestResources(request2, resources);  // Process 1 allocated
-    processes[2].requestResources(request3, resources);  // Process 2 allocated
-
-    std::cout << "\nInitial allocation leads to deadlock. Current resource state:\n";
-    printResources(resources);
-
-    // Process 3 tries to request resources, causing deadlock
-    if (!processes[3].requestResources(request4, resources)) {
-        std::cout << "Deadlock detected: Process 3 cannot allocate resources.\n";
-    }
+    // Create a deadlock scenario
+    createDeadlock(processes, resources);
 
     // Check for deadlock before attempting recovery
     std::cout << "\nChecking for deadlock before recovery:\n";
@@ -107,10 +110,11 @@ int main() {
     processes[1].releaseResources(resources);
     processes[2].releaseResources(resources);
     processes[3].releaseResources(resources);
-    processes[0].requestResources(request1, resources);  // Process 0 reallocated
-    processes[1].requestResources(request2, resources);  // Process 1 reallocated
-    processes[2].requestResources(request3, resources);  // Process 2 reallocated
+    createDeadlock(processes, resources);
 
+    // Check for deadlock before attempting recovery
+    std::cout << "\nChecking for deadlock before recovery:\n";
+    checkForDeadlock(recovery, processes, resources);
     std::cout << "\n--- Testing Rollback Strategy ---\n";
     recovery.resolveDeadlock(processes, resources, "rollback");
     printResources(resources);
@@ -124,10 +128,11 @@ int main() {
     processes[1].releaseResources(resources);
     processes[2].releaseResources(resources);
     processes[3].releaseResources(resources);
-    processes[0].requestResources(request1, resources);  // Process 0 reallocated
-    processes[1].requestResources(request2, resources);  // Process 1 reallocated
-    processes[2].requestResources(request3, resources);  // Process 2 reallocated
+    createDeadlock(processes, resources);
 
+    // Check for deadlock before attempting recovery
+    std::cout << "\nChecking for deadlock before recovery:\n";
+    checkForDeadlock(recovery, processes, resources);
     std::cout << "\n--- Testing Abort Strategy ---\n";
     recovery.resolveDeadlock(processes, resources, "abort");
     printResources(resources);
