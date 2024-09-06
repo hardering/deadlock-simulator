@@ -1,4 +1,5 @@
 #include "Simulation.h"
+#include "Graph.h"
 #include <iostream>
 
 Simulation::Simulation(QObject *parent) : QObject(parent) {
@@ -59,4 +60,21 @@ void Simulation::initializeProcessWithResources() {
     resC->printStatus();
 }
 
+bool Simulation::detectDeadlock() {
+    // Clear the graph
+    waitForGraph = WaitForGraph();
 
+    // Add edges for waiting processes
+    for (auto *process : processes) {
+        for (auto &resTuple : process->getResourceRequirements()) {
+            Resource *resource = std::get<0>(resTuple);
+            int need = std::get<1>(resTuple) - std::get<2>(resTuple); // maxDemand minus alreadyHeld
+            if (need > 0 && resource->getOwner() != nullptr) {
+                waitForGraph.addEdge(process->getId(), resource->getOwner()->getId());
+            }
+        }
+    }
+
+    // Check for cycles
+    return waitForGraph.hasCycle();
+}

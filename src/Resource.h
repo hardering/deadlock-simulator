@@ -2,7 +2,7 @@
 #define RESOURCE_H
 
 #include <set>
-
+#include <vector>
 class Process;
 
 class Resource {

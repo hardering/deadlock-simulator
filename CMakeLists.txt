@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.21)
 project(deadlock_simulator)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -7,6 +7,9 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 include_directories(src)
+
+# Set Qt6_DIR to the directory containing Qt6Config.cmake
+set(Qt6_DIR "/usr/lib/x86_64-linux-gnu/cmake/Qt6/")
 
 find_package(Qt6 COMPONENTS
         Core
@@ -28,11 +31,13 @@ add_executable(deadlock_simulator
         qt/main.cpp
         qt/Window.h
         qt/Window.cpp
+        src/Graph.cpp
+        src/Graph.h
 )
 
 target_link_libraries(deadlock_simulator
-        Qt::Core
-        Qt::Gui
-        Qt::Widgets
+        Qt6::Core
+        Qt6::Gui
+        Qt6::Widgets
         ${OPENGL_LIBRARIES}
 )

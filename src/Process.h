@@ -2,6 +2,7 @@
 #define PROCESS_H
 
 #include <vector>
+#include <tuple>
 #include "Resource.h"
 #include "Simulation.h"
 
@@ -24,6 +25,7 @@ public:
     void terminate();
     void addResource(Resource *resource);
     void printStatus() const;
+    const std::vector<std::tuple<Resource*, int, int>>& getResourceRequirements() const; // Add this line
 };
 
 #endif

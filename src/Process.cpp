@@ -30,7 +30,6 @@ void Process::releaseResources() {
     }
 }
 
-
 void Process::performRollback() {
     if (!allocatedResources.empty()) {
         allocatedResources.back()->releaseResources(id);
@@ -59,4 +58,8 @@ void Process::printStatus() const {
         std::cout << res->getId() << " ";
     }
     std::cout << std::endl;
+}
+
+const std::vector<std::tuple<Resource*, int, int>>& Process::getResourceRequirements() const {
+    return resources;
 }
