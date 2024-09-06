@@ -22,7 +22,7 @@ Window::Window(QWidget *parent) : QWidget(parent) {
     main->addWidget(tablesGroup, 1);
 
     QWidget * interactionContainer = setInteractionElements();
-    interactionContainer->setMinimumSize(200, 200);
+    interactionContainer->setMinimumSize(100, 200);
     main->addWidget(interactionContainer, 1);
 
     createEmptyTable();
@@ -36,6 +36,7 @@ QTableWidget *Window::createTable(const QString &title, const QStringList &heade
     table->setHorizontalHeaderLabels(headers);
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     table->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    table->setMinimumSize(500, 200);
 
     auto *tableLayout = new QVBoxLayout();
     tableLayout->addWidget(label);
@@ -48,10 +49,10 @@ QTableWidget *Window::createTable(const QString &title, const QStringList &heade
 }
 
 void Window::createEmptyTable() {
-    resourceTable = createTable("Resources", {"Id", "Units"});
+    resourceTable = createTable("Resources", {"Prozess-Id", "Gehaltene Ressourcen", "Angeforderte Ressourcen"});
 }
 
-void Window::updateResourcesTable(QTableWidget *table, const QList<QString> &data) {
+void Window::setTableData(QTableWidget *table, const QList<QString> &data) {
     int row = table->rowCount();
     table->insertRow(row);
     for (int i = 0; i < data.size(); ++i) {

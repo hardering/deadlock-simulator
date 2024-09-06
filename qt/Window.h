@@ -33,10 +33,10 @@ public:
 private:
     QHBoxLayout *layout;
     QPushButton *generateDeadlockSituationButton;
-    
+
 public slots:
 
-    void updateResourcesTable(QTableWidget *table, const QList<QString> &data);
+    void setTableData(QTableWidget *table, const QList<QString> &data);
 
 signals:
 

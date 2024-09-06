@@ -2,6 +2,7 @@
 #define RESOURCE_H
 
 #include <set>
+#include <list>
 
 class Process;
 

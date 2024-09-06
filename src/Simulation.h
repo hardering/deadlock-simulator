@@ -30,7 +30,7 @@ private:
 
 signals:
 
-    void updateResourcesTable(QTableWidget *table, const QList<QString> &data);
+    void setTableData(QTableWidget *table, const QList<QString> &data);
 };
 
 #endif

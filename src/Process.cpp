@@ -15,10 +15,21 @@ void Process::requestResources() {
             if (!resource->requestResource(this, need)) {
                 std::cout << "Process " << id << " added to waiting list for resource " << resource->getId()
                           << std::endl;
+                if (std::find(waitingResourceIds.begin(), waitingResourceIds.end(), resource->getId()) ==
+                    waitingResourceIds.end()) {
+                    waitingResourceIds.push_back(resource->getId());
+                }
+            } else {
+                // Wenn Ressource erfolgreich angefordert, aus der Warteliste entfernen, wenn vorhanden
+                auto it = std::find(waitingResourceIds.begin(), waitingResourceIds.end(), resource->getId());
+                if (it != waitingResourceIds.end()) {
+                    waitingResourceIds.erase(it);
+                }
             }
         }
     }
 }
+
 
 void Process::releaseResources() {
     for (auto &res: allocatedResources) {
@@ -60,3 +71,29 @@ void Process::printStatus() const {
     }
     std::cout << std::endl;
 }
+
+QString Process::getAllHeldResourceIds() const {
+    QString heldResourceIds;
+    for (auto &res: allocatedResources) {
+        if (!heldResourceIds.isEmpty()) {
+            heldResourceIds += ", ";  // Fügt ein Komma zwischen den IDs ein, wenn nicht der erste Eintrag
+        }
+        heldResourceIds += QString::number(res->getId());
+    }
+    return heldResourceIds;
+}
+
+QString Process::getWaitingResourceIdsAsString() const {
+    QString ids;
+    for (int i: waitingResourceIds) {
+        if (!ids.isEmpty()) {
+            ids += ", ";
+        }
+        ids += QString::number(i);
+    }
+    return ids;
+}
+
+
+
+
