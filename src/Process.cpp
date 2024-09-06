@@ -13,12 +13,20 @@ void Process::requestResources() {
 
         if (need > 0) {
             if (!resource->requestResource(this, need)) {
-                std::cout << "Process " << id << " added to waiting list for resource " << resource->getId()
-                          << std::endl;
+                if (std::find(waitingResourceIds.begin(), waitingResourceIds.end(), resource->getId()) ==
+                    waitingResourceIds.end()) {
+                    waitingResourceIds.push_back(resource->getId());
+                }
+            } else {
+                auto it = std::find(waitingResourceIds.begin(), waitingResourceIds.end(), resource->getId());
+                if (it != waitingResourceIds.end()) {
+                    waitingResourceIds.erase(it);
+                }
             }
         }
     }
 }
+
 
 void Process::releaseResources() {
     for (auto &res: allocatedResources) {
@@ -29,6 +37,7 @@ void Process::releaseResources() {
         std::get<2>(resTuple) = 0;
     }
 }
+
 
 void Process::performRollback() {
     if (!allocatedResources.empty()) {
@@ -63,3 +72,28 @@ void Process::printStatus() const {
 const std::vector<std::tuple<Resource*, int, int>>& Process::getResourceRequirements() const {
     return resources;
 }
+QString Process::getAllHeldResourceIds() const {
+    QString heldResourceIds;
+    for (auto &res: allocatedResources) {
+        if (!heldResourceIds.isEmpty()) {
+            heldResourceIds += ", ";
+        }
+        heldResourceIds += QString::number(res->getId());
+    }
+    return heldResourceIds;
+}
+
+QString Process::getWaitingResourceIdsAsString() const {
+    QString ids;
+    for (int i: waitingResourceIds) {
+        if (!ids.isEmpty()) {
+            ids += ", ";
+        }
+        ids += QString::number(i);
+    }
+    return ids;
+}
+
+
+
+

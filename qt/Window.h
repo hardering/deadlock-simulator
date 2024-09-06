@@ -6,30 +6,46 @@
 #include <QGraphicsView>
 #include <QGraphicsTextItem>
 #include <QRectF>
+#include <QTableWidget>
+#include <QHBoxLayout>
+#include <QPushButton>
 
 class Window : public QWidget {
 Q_OBJECT
 
 public:
+    QTableWidget *defaultTable;
+
     explicit Window(QWidget *parent = nullptr);
 
-    void addResourceGraphics(int id);
+    QWidget *setInteractionElements();
 
-    void addProcessGraphics(int id);
+    QString buttonStyle() const;
+
+    QTableWidget *createTable(const QString &title, const QStringList &headers);
+
+    void createEmptyTable();
+
+    bool isTableFilled(QTableWidget *table);
+    
+private:
+    QHBoxLayout *layout;
+    QPushButton *generateDeadlockSituationButton;
+    QPushButton *resetButton;
 
 public slots:
 
-    void handleResourceAdded(int id);
+    void setTableData(QTableWidget *table, const QList<QString> &data);
 
-    void handleProcessAdded(int id);
+    void onResetClicked();
 
-private:
-    QGraphicsScene *scene;
-    QGraphicsView *view;
-    int resourceCount = 0;
-    int processCount = 0;
+signals:
 
-    void centerAndPlaceText(QGraphicsItem *item, const QString &text, int xPosition);
+    void generateDeadlockSituationRequest();
+
+    void resetTableRequest();
+
 };
+
 
 #endif

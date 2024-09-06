@@ -33,6 +33,8 @@ add_executable(deadlock_simulator
         qt/Window.cpp
         src/Graph.cpp
         src/Graph.h
+        utils/detectionUtils.cpp
+        utils/detectionUtils.h
 )
 
 target_link_libraries(deadlock_simulator

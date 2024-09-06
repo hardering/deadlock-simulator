@@ -4,7 +4,7 @@
 
 Resource::Resource(int id, int units) : id(id), units(units), owner(nullptr) {}
 
-bool Resource::requestResource(Process* requestor, int requestedUnits) {
+bool Resource::requestResource(Process *requestor, int requestedUnits) {
     if (units >= requestedUnits) {
         units -= requestedUnits;
         owner = requestor;
@@ -18,7 +18,7 @@ bool Resource::requestResource(Process* requestor, int requestedUnits) {
     }
 }
 
-void Resource::addToWaitingList(Process* process, int neededUnits) {
+void Resource::addToWaitingList(Process *process, int neededUnits) {
     waitingList.emplace_back(process, neededUnits);
 }
 
@@ -27,7 +27,7 @@ void Resource::releaseResources(int releasedUnits) {
 
     auto it = waitingList.begin();
     while (it != waitingList.end() && units >= it->second) {
-        Process* proc = it->first;
+        Process *proc = it->first;
         int need = it->second;
         if (requestResource(proc, need)) {
             it = waitingList.erase(it);
@@ -45,13 +45,17 @@ void Resource::printStatus() const {
         std::cout << "None";
     }
     std::cout << ", Waiting Queue: ";
-    for (const auto& pair : waitingList) {
+    for (const auto &pair: waitingList) {
         std::cout << pair.first->getId() << " ";
     }
     std::cout << std::endl;
 }
 
 
-Process* Resource::getOwner() const {
+Process *Resource::getOwner() const {
     return owner;
+}
+
+int Resource::getUnits() const {
+    return units;
 }
