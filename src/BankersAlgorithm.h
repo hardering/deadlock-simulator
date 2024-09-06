@@ -1,6 +1,5 @@
-// BankersAlgorithm.h
-
 #pragma once
+
 #include "Process.h"
 #include "Resource.h"
 #include "DeadlockDetector.h"
@@ -12,24 +11,9 @@ private:
     DeadlockDetector detector;
 
 public:
-    BankersAlgorithm(const std::vector<Process>& procs, const std::vector<Resource>& res)
-            : processes(procs), resources(res) {}
+    BankersAlgorithm(const std::vector<Process> &process, const std::vector<Resource> &resource);
 
-    bool requestResources(int pid, const std::vector<int>& request) {
-        Process& process = processes[pid];
-        if (!process.requestResources(request, resources)) {
-            return false;
-        }
+    bool requestResources(int pid, const std::vector<int> &request);
 
-        if (detector.isSystemInSafeState(processes, resources)) {
-            return true;
-        } else {
-            process.releaseResources(resources);
-            return false;
-        }
-    }
-
-    void releaseResources(int pid) {
-        processes[pid].releaseResources(resources);
-    }
+    void releaseResources(int pid);
 };

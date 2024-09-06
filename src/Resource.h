@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>
 
 class Resource {
@@ -7,27 +8,13 @@ private:
     int availableInstances;
 
 public:
-    Resource(int total) : totalInstances(total), availableInstances(total) {}
+    explicit Resource(int total);
 
-    bool allocate(int instances) {
-        if (availableInstances >= instances) {
-            availableInstances -= instances;
-            return true;
-        }
-        return false;
-    }
+    bool allocate(int instances);
 
-    void release(int instances) {
-        availableInstances += instances;
-        if (availableInstances > totalInstances)
-            availableInstances = totalInstances;
-    }
+    void release(int instances);
 
-    int getAvailableInstances() const {
-        return availableInstances;
-    }
+    int getAvailableInstances() const;
 
-    int getTotalInstances() const {
-        return totalInstances;
-    }
+    int getTotalInstances() const;
 };
