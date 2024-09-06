@@ -26,6 +26,8 @@ public:
 
     void generateDeadlockSituation();
 
+    void clearAll();
+
 private:
 
 signals:

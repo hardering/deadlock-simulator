@@ -14,9 +14,7 @@ class Window : public QWidget {
 Q_OBJECT
 
 public:
-    QTableWidget *resourceTable;
-    QTableWidget *processTable;
-    QTableWidget *waitingListTable;
+    QTableWidget *defaultTable;
 
     explicit Window(QWidget *parent = nullptr);
 
@@ -26,21 +24,26 @@ public:
 
     QTableWidget *createTable(const QString &title, const QStringList &headers);
 
-    QPushButton *getPresetButton() const;
-
     void createEmptyTable();
+
+    bool isTableFilled(QTableWidget *table);
 
 private:
     QHBoxLayout *layout;
     QPushButton *generateDeadlockSituationButton;
+    QPushButton *resetButton;
 
 public slots:
 
     void setTableData(QTableWidget *table, const QList<QString> &data);
 
+    void onResetClicked();
+
 signals:
 
     void generateDeadlockSituationRequest();
+
+    void resetTableRequest();
 
 };
 

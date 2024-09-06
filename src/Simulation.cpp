@@ -4,6 +4,8 @@
 Simulation::Simulation(Window *windowInstance, QObject *parent) : QObject(parent), window(windowInstance) {
     connect(this, &Simulation::setTableData, window, &Window::setTableData);
     connect(window, &Window::generateDeadlockSituationRequest, this, &Simulation::generateDeadlockSituation);
+    connect(window, &Window::resetTableRequest, this, &Simulation::clearAll);
+
 }
 
 void Simulation::addProcess(Process *process) {
@@ -17,6 +19,19 @@ void Simulation::addResource(Resource *resource) {
 void Simulation::removeProcess(Process *process) {
     processes.erase(std::remove(processes.begin(), processes.end(), process), processes.end());
 }
+
+void Simulation::clearAll() {
+    for (auto *process: processes) {
+        delete process;
+    }
+    processes.clear();
+
+    for (auto *resource: resources) {
+        delete resource;
+    }
+    resources.clear();
+}
+
 
 void Simulation::generateDeadlockSituation() {
     auto *resA = new Resource(1, 3);
@@ -36,38 +51,26 @@ void Simulation::generateDeadlockSituation() {
     addResource(resA);
     addResource(resB);
     addResource(resC);
-    resA->printStatus();
-    resB->printStatus();
-    resC->printStatus();
-
 
     addProcess(proc1);
     addProcess(proc2);
     addProcess(proc3);
-    proc1->printStatus();
-    proc2->printStatus();
-    proc3->printStatus();
 
     proc1->requestResources();
     proc2->requestResources();
     proc3->requestResources();
 
-    proc1->printStatus();
-    proc2->printStatus();
-    proc3->printStatus();
-    resA->printStatus();
-    resB->printStatus();
-    resC->printStatus();
-    emit setTableData(window->resourceTable,
-                      {QString::number(resA->getId()), proc1->getAllHeldResourceIds(),
-                       proc1->getWaitingResourceIdsAsString()});
-    emit setTableData(window->resourceTable,
-                      {QString::number(resB->getId()), proc2->getAllHeldResourceIds(),
-                       proc2->getWaitingResourceIdsAsString()});
-    emit setTableData(window->resourceTable,
-                      {QString::number(resC->getId()), proc3->getAllHeldResourceIds(),
-                       proc3->getWaitingResourceIdsAsString()});
+    if (!window->isTableFilled(window->defaultTable)) {
+        emit setTableData(window->defaultTable,
+                          {QString::number(resA->getId()), proc1->getAllHeldResourceIds(),
+                           proc1->getWaitingResourceIdsAsString()});
+        emit setTableData(window->defaultTable,
+                          {QString::number(resB->getId()), proc2->getAllHeldResourceIds(),
+                           proc2->getWaitingResourceIdsAsString()});
+        emit setTableData(window->defaultTable,
+                          {QString::number(resC->getId()), proc3->getAllHeldResourceIds(),
+                           proc3->getWaitingResourceIdsAsString()});
 
-
+    }
 }
 

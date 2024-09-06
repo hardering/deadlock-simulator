@@ -9,18 +9,15 @@ Process::Process(int processId, Simulation *sim, std::vector<std::tuple<Resource
 void Process::requestResources() {
     for (auto &resTuple: resources) {
         Resource *resource = std::get<0>(resTuple);
-        int need = std::get<1>(resTuple) - std::get<2>(resTuple); // maxDemand minus alreadyHeld
+        int need = std::get<1>(resTuple) - std::get<2>(resTuple);
 
         if (need > 0) {
             if (!resource->requestResource(this, need)) {
-                std::cout << "Process " << id << " added to waiting list for resource " << resource->getId()
-                          << std::endl;
                 if (std::find(waitingResourceIds.begin(), waitingResourceIds.end(), resource->getId()) ==
                     waitingResourceIds.end()) {
                     waitingResourceIds.push_back(resource->getId());
                 }
             } else {
-                // Wenn Ressource erfolgreich angefordert, aus der Warteliste entfernen, wenn vorhanden
                 auto it = std::find(waitingResourceIds.begin(), waitingResourceIds.end(), resource->getId());
                 if (it != waitingResourceIds.end()) {
                     waitingResourceIds.erase(it);
@@ -76,7 +73,7 @@ QString Process::getAllHeldResourceIds() const {
     QString heldResourceIds;
     for (auto &res: allocatedResources) {
         if (!heldResourceIds.isEmpty()) {
-            heldResourceIds += ", ";  // Fügt ein Komma zwischen den IDs ein, wenn nicht der erste Eintrag
+            heldResourceIds += ", ";
         }
         heldResourceIds += QString::number(res->getId());
     }
