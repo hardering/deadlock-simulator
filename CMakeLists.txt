@@ -28,6 +28,8 @@ add_executable(deadlock_simulator
         qt/main.cpp
         qt/Window.h
         qt/Window.cpp
+        utils/detectionUtils.cpp
+        utils/detectionUtils.h
 )
 
 target_link_libraries(deadlock_simulator

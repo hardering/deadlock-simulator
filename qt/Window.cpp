@@ -27,7 +27,7 @@ Window::Window(QWidget *parent)
     main->addWidget(tablesGroup, 1);
 
     QWidget * interactionContainer = setInteractionElements();
-    interactionContainer->setMinimumSize(100, 200);
+    interactionContainer->setMinimumSize(200, 200);
     main->addWidget(interactionContainer, 1);
 
     createEmptyTable();
@@ -60,7 +60,7 @@ void Window::onResetClicked() {
 
 void Window::createEmptyTable() {
     defaultTable = createTable("Process and Resource allocation",
-                               {"Process Id", "Held Resources", "Requested Resources"});
+                               {"Process Id", "Held Resources", "Requested Resources", "Resource Units"});
 }
 
 QTableWidget *Window::createTable(const QString &title, const QStringList &headers) {
@@ -71,7 +71,9 @@ QTableWidget *Window::createTable(const QString &title, const QStringList &heade
     table->setHorizontalHeaderLabels(headers);
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     table->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    table->setMinimumSize(500, 200);
+    table->setMinimumSize(600, 200);
+
+    table->setStyleSheet("gridline-color: darkgrey;");
 
     auto *tableLayout = new QVBoxLayout();
     tableLayout->addWidget(label);
@@ -102,6 +104,7 @@ QString Window::buttonStyle() const {
            "  padding: 6px;"
            "  background-color: black;"
            "  color: white;"
+           "  border-radius: 4px;"
            "}"
            "QPushButton:hover {"
            "  background-color: darkgrey;"

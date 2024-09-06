@@ -7,7 +7,6 @@ int main(int argc, char *argv[]) {
 
     Window window;
     auto *simulation = new Simulation(&window);
-
     window.show();
 
     return QApplication::exec();

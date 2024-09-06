@@ -28,6 +28,12 @@ public:
 
     void clearAll();
 
+    bool detectDeadlock();
+
+    std::vector<Process *> &getProcesses();
+
+    std::vector<Resource *> &getResources();
+
 private:
 
 signals:
