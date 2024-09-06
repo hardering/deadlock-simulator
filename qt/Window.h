@@ -27,7 +27,7 @@ public:
     void createEmptyTable();
 
     bool isTableFilled(QTableWidget *table);
-
+    
 private:
     QHBoxLayout *layout;
     QPushButton *generateDeadlockSituationButton;

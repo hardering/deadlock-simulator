@@ -1,5 +1,4 @@
 #include "Window.h"
-#include "Simulation.h"
 #include <QFont>
 #include <QPen>
 #include <QHBoxLayout>
@@ -9,13 +8,17 @@
 #include <QHeaderView>
 #include <QGraphicsProxyWidget>
 #include <QGroupBox>
-#include <QMessageBox>
 
-Window::Window(QWidget *parent) : QWidget(parent) {
+Window::Window(QWidget *parent)
+        : QWidget(parent),
+          defaultTable(nullptr),
+          generateDeadlockSituationButton(nullptr),
+          resetButton(nullptr) {
+
     setWindowTitle("Deadlock Simulator");
     resize(800, 300);
 
-    auto *tablesGroup = new QGroupBox();
+    auto *tablesGroup = new QGroupBox(this);
     auto *main = new QHBoxLayout(this);
 
 
@@ -28,6 +31,36 @@ Window::Window(QWidget *parent) : QWidget(parent) {
     main->addWidget(interactionContainer, 1);
 
     createEmptyTable();
+}
+
+QWidget *Window::setInteractionElements() {
+    auto *interactionElementsContainer = new QWidget(this);
+    auto *interactionElementsLayout = new QVBoxLayout(interactionElementsContainer);
+
+
+    generateDeadlockSituationButton = new QPushButton("Generate", this);
+    resetButton = new QPushButton("Reset", this);
+
+    resetButton->setStyleSheet(buttonStyle());
+    generateDeadlockSituationButton->setStyleSheet(buttonStyle());
+
+    interactionElementsLayout->addWidget(generateDeadlockSituationButton);
+    interactionElementsLayout->addWidget(resetButton);
+    interactionElementsLayout->addStretch();
+
+    connect(generateDeadlockSituationButton, &QPushButton::clicked, this, &Window::generateDeadlockSituationRequest);
+    connect(resetButton, &QPushButton::clicked, this, &Window::onResetClicked);
+    return interactionElementsContainer;
+}
+
+void Window::onResetClicked() {
+    defaultTable->setRowCount(0);
+    emit resetTableRequest();
+}
+
+void Window::createEmptyTable() {
+    defaultTable = createTable("Process and Resource allocation",
+                               {"Process Id", "Held Resources", "Requested Resources"});
 }
 
 QTableWidget *Window::createTable(const QString &title, const QStringList &headers) {
@@ -50,11 +83,6 @@ QTableWidget *Window::createTable(const QString &title, const QStringList &heade
     return table;
 }
 
-void Window::createEmptyTable() {
-    defaultTable = createTable("Process and Resource allocation",
-                               {"Process Id", "Held Resources", "Requested Resources"});
-}
-
 void Window::setTableData(QTableWidget *table, const QList<QString> &data) {
     int row = table->rowCount();
     table->insertRow(row);
@@ -67,44 +95,16 @@ bool Window::isTableFilled(QTableWidget *table) {
     return table->rowCount() > 0;
 }
 
-void Window::onResetClicked() {
-    defaultTable->setRowCount(0);
-    emit resetTableRequest();
-}
-
-QWidget *Window::setInteractionElements() {
-    auto *interactionElementsContainer = new QWidget;
-    auto *interactionElementsLayout = new QVBoxLayout(interactionElementsContainer);
-
-
-    generateDeadlockSituationButton = new QPushButton("Generate", this);
-    resetButton = new QPushButton("Reset", this);
-
-    resetButton->setStyleSheet(buttonStyle());
-    generateDeadlockSituationButton->setStyleSheet(buttonStyle());
-
-    interactionElementsLayout->addWidget(generateDeadlockSituationButton);
-    interactionElementsLayout->addWidget(resetButton);
-    interactionElementsLayout->addStretch();
-
-    connect(generateDeadlockSituationButton, &QPushButton::clicked, this, &Window::generateDeadlockSituationRequest);
-    connect(resetButton, &QPushButton::clicked, this, &Window::onResetClicked);
-    return interactionElementsContainer;
-}
-
 QString Window::buttonStyle() const {
     return "QPushButton {"
            "  font: 14px;"
-           "  border: 1px solid black;"
+           "  border: none;"
            "  padding: 6px;"
-           "  background-color: white;"
-           "  color: black;"
+           "  background-color: black;"
+           "  color: white;"
            "}"
            "QPushButton:hover {"
-           "  background-color: silver;"
-           "}"
-           "QPushButton:disabled {"
-           " background-color: darkgrey;"
+           "  background-color: darkgrey;"
            "}";
 }
 
