@@ -1,25 +1,35 @@
-#ifndef RESOURCE_H
-#define RESOURCE_H
+// Resource.h
 
-#include <set>
-#include <vector>
-class Process;
+#pragma once
+#include <iostream>
 
 class Resource {
 private:
-    int id;
-    int units;
-    Process* owner;
-    std::vector<std::pair<Process*, int>> waitingList;
+    int totalInstances;
+    int availableInstances;
 
 public:
-    explicit Resource(int id, int units);
-    bool requestResource(Process* requestor, int requestedUnits);
-    void releaseResources(int releasedUnits);
-    void addToWaitingList(Process* process, int neededUnits);
-    Process* getOwner() const;
-    int getId() const { return id; }
-    void printStatus() const;
-};
+    Resource(int total) : totalInstances(total), availableInstances(total) {}
 
-#endif
+    bool allocate(int instances) {
+        if (availableInstances >= instances) {
+            availableInstances -= instances;
+            return true;
+        }
+        return false;
+    }
+
+    void release(int instances) {
+        availableInstances += instances;
+        if (availableInstances > totalInstances)
+            availableInstances = totalInstances;
+    }
+
+    int getAvailableInstances() const {
+        return availableInstances;
+    }
+
+    int getTotalInstances() const {
+        return totalInstances;
+    }
+};

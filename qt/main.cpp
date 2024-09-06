@@ -1,6 +1,5 @@
 #include <QApplication>
 #include "Window.h"
-#include "Simulation.h"
 
 // Include the test function
 void testBasicFunctionality();

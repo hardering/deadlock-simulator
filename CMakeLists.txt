@@ -20,19 +20,26 @@ find_package(Qt6 COMPONENTS
 find_package(OpenGL REQUIRED)
 
 add_executable(deadlock_simulator
-        src/Resource.cpp
-        src/Resource.h
-        src/Process.cpp
-        src/Process.h
-        src/Simulation.cpp
-        src/Simulation.h
-        tests/testBasicFunctionality.cpp
-        tests/testBasicFunctionality.h
         qt/main.cpp
         qt/Window.h
         qt/Window.cpp
-        src/Graph.cpp
-        src/Graph.h
+        src/main.cpp
+        src/Process.cpp
+        src/Process.h
+        src/Resource.cpp
+        src/Resource.h
+        src/DeadlockDetector.cpp
+        src/DeadlockDetector.h
+        src/BankersAlgorithm.cpp
+        src/BankersAlgorithm.h
+        tests/BankersAlgorithmTest.cpp
+        tests/BankersAlgorithmTest.h
+        tests/DeadlockTest.cpp
+        tests/DeadlockTest.h
+        src/DeadlockRecovery.cpp
+        src/DeadlockRecovery.h
+        src/DeadlockAvoidance.cpp
+        src/DeadlockAvoidance.h
 )
 
 target_link_libraries(deadlock_simulator
