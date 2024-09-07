@@ -11,18 +11,26 @@
 class Deadlock : public QObject {
 Q_OBJECT
 
+private:
+    std::vector<Resource> resources;
+    std::vector<Process> processes;
+    Window *window;
+
 public:
 
-    Deadlock();
+    Deadlock(Window *window);
 
-public slots:
+    void initializeResourcesAndProcesses();
 
-    void createDeadlock(Window *window);
+    void clear();
 
     QString vectorToQString(const std::vector<int> &vector);
 
+public slots:
+
+    void createDeadlock();
 
 signals:
-    
+
     void setTableData(QTableWidget *table, const QList<QString> &data);
 };

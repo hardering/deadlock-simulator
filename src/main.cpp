@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
     Window window;
-    auto *deadlock = new Deadlock();
+    auto *deadlock = new Deadlock(&window);
     auto *simulation = new Simulation(&window, deadlock);
 
     DeadlockAvoidanceTest avoidanceTests;

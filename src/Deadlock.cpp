@@ -1,9 +1,41 @@
 #include <Deadlock.h>
 #include <QString>
 
-Deadlock::Deadlock() {
-
+Deadlock::Deadlock(Window *window) : window(window) {
+    initializeResourcesAndProcesses();
+    connect(this, &Deadlock::setTableData, window, &Window::setTableData);
+    connect(window, &Window::resetTableRequest, this, &Deadlock::clear);
 };
+
+void Deadlock::initializeResourcesAndProcesses() {
+    resources = {
+            Resource(6), Resource(4), Resource(7)
+    };
+    processes = {
+            Process(0, {3, 2, 2}, 1),
+            Process(1, {2, 2, 2}, 2),
+            Process(2, {3, 1, 3}, 3),
+            Process(3, {2, 2, 2}, 1),
+    };
+}
+
+void Deadlock::clear() {
+    for (auto &resource: resources) {
+        resource.release(resource.getTotalInstances());
+
+    }
+
+    for (auto &process: processes) {
+        process.releaseResources(resources);
+    }
+
+    auto *deadlockDetector = new DeadlockDetector();
+    auto *deadlockRecovery = new DeadlockRecovery();
+    deadlockDetector->checkForDeadlock(*deadlockRecovery, processes, resources);
+    std::cout << "Deadlock got cleared." << std::endl;
+
+}
+
 
 QString Deadlock::vectorToQString(const std::vector<int> &vec) {
     QString result;
@@ -13,22 +45,7 @@ QString Deadlock::vectorToQString(const std::vector<int> &vec) {
     return result.trimmed();
 }
 
-void Deadlock::createDeadlock(Window *window) {
-    connect(this, &Deadlock::setTableData, window, &Window::setTableData);
-
-    std::vector<Resource> resources =
-            {
-                    Resource(6), Resource(4), Resource(7)
-            };
-
-    std::vector<Process> processes =
-            {
-                    Process(0, {3, 2, 2}, 1),
-                    Process(1, {2, 2, 2}, 2),
-                    Process(2, {3, 1, 3}, 3),
-                    Process(3, {2, 2, 2}, 1),
-            };
-
+void Deadlock::createDeadlock() {
     std::vector<int> request1 = {2, 1, 2};
     std::vector<int> request2 = {2, 1, 1};
     std::vector<int> request3 = {1, 1, 2};
@@ -38,7 +55,6 @@ void Deadlock::createDeadlock(Window *window) {
     processes[1].requestResources(request2, resources);
     processes[2].requestResources(request3, resources);
     processes[3].requestResources(request3, resources);
-    processes[3].requestResources(request4, resources);
 
     auto *deadlockDetector = new DeadlockDetector();
     auto *deadlockRecovery = new DeadlockRecovery();

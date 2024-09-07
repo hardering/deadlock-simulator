@@ -42,12 +42,6 @@ bool DeadlockDetector::canProcessComplete(const Process &process, const std::vec
 
 void DeadlockDetector::checkForDeadlock(DeadlockRecovery &recovery, const std::vector<Process> &processes,
                                         const std::vector<Resource> &resources) {
-
-    int number = isSystemInSafeState(const_cast<std::vector<Process> &>(processes),
-                                     const_cast<std::vector<Resource> &>(resources));
-
-    std::cout << number << std::endl;
-
     if (recovery.detectDeadlock(processes, resources)) {
         std::cout << "Deadlock detected.\n";
     } else {

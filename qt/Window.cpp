@@ -33,14 +33,18 @@ QWidget *Window::setInteractionElements() {
     auto *interactionElementsLayout = new QVBoxLayout(interactionElementsContainer);
 
 
-    generateDeadlockSituationButton = new QPushButton("Generate", this);
-    resetButton = new QPushButton("Reset", this);
-
-    resetButton->setStyleSheet(buttonStyle());
+    generateDeadlockSituationButton = new QPushButton("Generate Deadlock", this);
     generateDeadlockSituationButton->setStyleSheet(buttonStyle());
-
     interactionElementsLayout->addWidget(generateDeadlockSituationButton);
+
+    resetButton = new QPushButton("Reset", this);
+    resetButton->setStyleSheet(buttonStyle());
     interactionElementsLayout->addWidget(resetButton);
+
+    bankersAlgorithmButton = new QPushButton("Run Banker's Algorithm", this);
+    bankersAlgorithmButton->setStyleSheet(buttonStyle());
+    interactionElementsLayout->addWidget(bankersAlgorithmButton);
+
     interactionElementsLayout->addStretch();
 
     connect(generateDeadlockSituationButton, &QPushButton::clicked, this, [this]() {

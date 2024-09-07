@@ -28,6 +28,7 @@ private:
     QHBoxLayout *layout;
     QPushButton *generateDeadlockSituationButton;
     QPushButton *resetButton;
+    QPushButton *bankersAlgorithmButton;
 
 public:
     QTableWidget *defaultTable;

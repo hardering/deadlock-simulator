@@ -15,7 +15,8 @@ private:
 public:
     explicit Simulation(Window *qtWindow, Deadlock *deadlock, QObject *parent = nullptr);
 
-    void start();
+    void createDeadlock();
+
 };
 
 #endif

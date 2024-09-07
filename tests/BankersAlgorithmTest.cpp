@@ -27,7 +27,7 @@ void BankersAlgorithmTest::testUnsafeResourceAllocation() {
     };
 
     BankersAlgorithm bankers(processes, resources);
-    std::vector<int> request = {8, 0, 4};  // Überschreitet den maximalen Bedarf von Prozess 0
+    std::vector<int> request = {8, 0, 4};
     assert(!bankers.requestResources(0, request) && "Process 0 should not allocate resources.");
     std::cout << "testUnsafeResourceAllocation passed.\n";
 }
