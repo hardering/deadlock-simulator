@@ -1,3 +1,4 @@
+#include <QString>
 #include "Process.h"
 
 Process::Process(int pid, const std::vector<int> &maxResources, int priority) : pid(pid), priority(priority),
@@ -37,6 +38,34 @@ int Process::getPID() const {
 
 int Process::getPriority() const {
     return priority;
+}
+
+const std::vector<int> &Process::getMaxResources() const {
+    return maxResources;
+}
+
+const std::vector<int> &Process::getAllocatedResources() const {
+    return allocatedResources;
+}
+
+QString Process::getAllocatedResourcesAsString() const {
+    for (int resource: allocatedResources) {
+        if (resource > 0) {
+            return "yes";
+        }
+    }
+    return "no";
+}
+
+QString Process::getState(std::vector<Process> &processes, std::vector<Resource> &resources) {
+    if (isFinished()) {
+        status = "Completed";
+    } else if (getPID() == deadlock->isSystemInSafeState(processes, resources)) {
+        status = "Deadlock";
+    } else if (std::any_of(neededResources.begin(), neededResources.end(), [](int needed) { return needed > 0; })) {
+        status = "Waiting";
+    }
+    return status;
 }
 
 const std::vector<int> &Process::getNeededResources() const {

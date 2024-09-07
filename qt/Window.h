@@ -9,6 +9,17 @@
 #include <QTableWidget>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QFont>
+#include <QPen>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QTableWidget>
+#include <QLabel>
+#include <QHeaderView>
+#include <QGraphicsProxyWidget>
+#include <QGroupBox>
+#include "Process.h"
+#include "Resource.h"
 
 class Window : public QWidget {
 Q_OBJECT
@@ -17,7 +28,7 @@ private:
     QHBoxLayout *layout;
     QPushButton *generateDeadlockSituationButton;
     QPushButton *resetButton;
-    
+
 public:
     QTableWidget *defaultTable;
 
@@ -33,7 +44,6 @@ public:
 
     bool isTableFilled(QTableWidget *table);
 
-
 public slots:
 
     void setTableData(QTableWidget *table, const QList<QString> &data);
@@ -42,7 +52,8 @@ public slots:
 
 signals:
 
-    void generateDeadlockSituationRequest();
+    void
+    generateDeadlockRequest(std::vector<Process> &processes, std::vector<Resource> &resources, QTableWidget *table);
 
     void resetTableRequest();
 

@@ -45,6 +45,8 @@ add_executable(deadlock_simulator
         src/DeadlockAvoidance.h
         src/Deadlock.cpp
         src/Deadlock.h
+        src/Simulation.cpp
+        src/Simulation.h
 )
 
 target_link_libraries(deadlock_simulator

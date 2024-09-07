@@ -4,12 +4,15 @@
 #include "../tests/DeadlockTest.h"
 #include "../tests/DeadlockRecoveryTest.h"
 #include "../tests/DeadlockAvoidanceTest.h"
+#include "Deadlock.h"
+#include "Simulation.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
     Window window;
-    window.show();
+    auto *deadlock = new Deadlock();
+    auto *simulation = new Simulation(&window, deadlock);
 
     DeadlockAvoidanceTest avoidanceTests;
     avoidanceTests.runAllTests();
@@ -20,5 +23,6 @@ int main(int argc, char *argv[]) {
     BankersAlgorithmTest bankersTests;
     bankersTests.runAllTests();
 
+    window.show();
     QApplication::exec();
 }

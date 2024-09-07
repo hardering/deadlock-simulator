@@ -8,6 +8,10 @@
 
 class DeadlockDetector;
 
+class Process;
+
+class Resource;
+
 class DeadlockRecovery {
 
 public:

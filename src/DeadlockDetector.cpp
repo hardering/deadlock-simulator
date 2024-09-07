@@ -1,7 +1,7 @@
 #include "DeadlockDetector.h"
 #include "DeadlockRecovery.h"
 
-bool DeadlockDetector::isSystemInSafeState(std::vector<Process> &processes, std::vector<Resource> &resources) {
+int DeadlockDetector::isSystemInSafeState(std::vector<Process> &processes, std::vector<Resource> &resources) {
     std::vector<int> work(resources.size());
     std::vector<bool> finish(processes.size(), false);
 
@@ -24,7 +24,12 @@ bool DeadlockDetector::isSystemInSafeState(std::vector<Process> &processes, std:
         }
     } while (progressMade);
 
-    return std::all_of(finish.begin(), finish.end(), [](bool f) { return f; });
+    for (size_t i = 0; i < finish.size(); ++i) {
+        if (!finish[i]) {
+            return processes[i].getPID();
+        }
+    }
+    return -1;
 }
 
 bool DeadlockDetector::canProcessComplete(const Process &process, const std::vector<int> &work) const {
@@ -37,6 +42,12 @@ bool DeadlockDetector::canProcessComplete(const Process &process, const std::vec
 
 void DeadlockDetector::checkForDeadlock(DeadlockRecovery &recovery, const std::vector<Process> &processes,
                                         const std::vector<Resource> &resources) {
+
+    int number = isSystemInSafeState(const_cast<std::vector<Process> &>(processes),
+                                     const_cast<std::vector<Resource> &>(resources));
+
+    std::cout << number << std::endl;
+
     if (recovery.detectDeadlock(processes, resources)) {
         std::cout << "Deadlock detected.\n";
     } else {

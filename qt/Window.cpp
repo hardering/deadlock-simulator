@@ -1,19 +1,14 @@
 #include "Window.h"
-#include <QFont>
-#include <QPen>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QTableWidget>
-#include <QLabel>
-#include <QHeaderView>
-#include <QGraphicsProxyWidget>
-#include <QGroupBox>
+#include "Process.h"
+#include "Resource.h"
+#include "Deadlock.h"
 
 Window::Window(QWidget *parent)
         : QWidget(parent),
           defaultTable(nullptr),
           generateDeadlockSituationButton(nullptr),
           resetButton(nullptr) {
+
 
     setWindowTitle("Deadlock Simulator");
     resize(800, 300);
@@ -26,7 +21,7 @@ Window::Window(QWidget *parent)
 
     main->addWidget(tablesGroup, 1);
 
-    QWidget * interactionContainer = setInteractionElements();
+    QWidget *interactionContainer = setInteractionElements();
     interactionContainer->setMinimumSize(200, 200);
     main->addWidget(interactionContainer, 1);
 
@@ -48,7 +43,12 @@ QWidget *Window::setInteractionElements() {
     interactionElementsLayout->addWidget(resetButton);
     interactionElementsLayout->addStretch();
 
-    connect(generateDeadlockSituationButton, &QPushButton::clicked, this, &Window::generateDeadlockSituationRequest);
+    connect(generateDeadlockSituationButton, &QPushButton::clicked, this, [this]() {
+        std::vector<Process> processes;
+        std::vector<Resource> resources;
+        emit generateDeadlockRequest(processes, resources, defaultTable);
+    });
+
     connect(resetButton, &QPushButton::clicked, this, &Window::onResetClicked);
     return interactionElementsContainer;
 }
@@ -58,9 +58,11 @@ void Window::onResetClicked() {
     emit resetTableRequest();
 }
 
+
 void Window::createEmptyTable() {
     defaultTable = createTable("Process and Resource allocation",
-                               {"Process Id", "Held Resources", "Requested Resources", "Resource Units"});
+                               {"Process Id", "State", "After Allocation",
+                                "Requested Resources"});
 }
 
 QTableWidget *Window::createTable(const QString &title, const QStringList &headers) {
@@ -71,7 +73,7 @@ QTableWidget *Window::createTable(const QString &title, const QStringList &heade
     table->setHorizontalHeaderLabels(headers);
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     table->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    table->setMinimumSize(600, 200);
+    table->setMinimumSize(700, 200);
 
     table->setStyleSheet("gridline-color: darkgrey;");
 
