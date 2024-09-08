@@ -7,6 +7,9 @@ BankersAlgorithm::BankersAlgorithm(const std::vector<Process> &p, const std::vec
 
 bool BankersAlgorithm::requestResources(int pid, const std::vector<int> &request) {
     Process &proc = processes.at(pid);
+    std::cout << "Requesting resources for PID " << pid << ": ";
+    for (auto req: request) std::cout << req << " ";
+    std::cout << std::endl;
 
     std::cout << "Available Resources before request: ";
     for (auto &res: resources) {
@@ -20,6 +23,7 @@ bool BankersAlgorithm::requestResources(int pid, const std::vector<int> &request
     }
 
     proc.allocateResources(request);
+    std::cout << "Resources allocated, checking system state..." << std::endl;
 
     if (isSystemInSafeState()) {
         std::cout << "System remains in a safe state after request." << std::endl;
@@ -27,9 +31,11 @@ bool BankersAlgorithm::requestResources(int pid, const std::vector<int> &request
     } else {
         std::cout << "System would enter an unsafe state, rolling back." << std::endl;
         proc.releaseResources(request);
+        std::cout << "Rollback completed." << std::endl;
         return false;
     }
 }
+
 
 bool BankersAlgorithm::canAllocateResources(const Process &proc, const std::vector<int> &request) {
     for (size_t i = 0; i < request.size(); ++i) {

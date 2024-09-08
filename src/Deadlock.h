@@ -15,7 +15,7 @@ private:
     std::vector<Resource> resources;
     std::vector<Process> processes;
     Window *window;
-    std::vector<int> request_01, request_02, request_03;
+    std::vector<int> request_01, request_02, request_03, request_04;
     std::vector<std::vector<int>> requests;
     DeadlockDetector *deadlockDetector;
     DeadlockRecovery *deadlockRecovery;

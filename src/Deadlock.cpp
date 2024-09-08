@@ -9,14 +9,19 @@ Deadlock::Deadlock(Window *window) : window(window) {
 };
 
 void Deadlock::initializeResourcesAndProcesses() {
-    resources = { Resource(6), Resource(4), Resource(7) };
+    resources = {Resource(6), Resource(4), Resource(7)};
     processes = {
-            Process(0, {3, 2, 2}, 1),  // Prozess 0, Priorität 1
-            Process(1, {2, 2, 2}, 2),  // Prozess 1, Priorität 2
-            Process(2, {3, 1, 3}, 3),  // Prozess 2, Priorität 3
-            Process(3, {2, 2, 2}, 1),  // Prozess 3, Priorität 1
-            Process(4, {4, 3, 3}, 2)   // Prozess 4, Priorität 2
+            Process(0, {3, 2, 2}, 1),
+            Process(1, {2, 2, 2}, 2),
+            Process(2, {3, 1, 3}, 3),
+            Process(3, {2, 2, 4}, 1),
+            Process(4, {4, 3, 3}, 2)
     };
+
+    request_01 = {2, 1, 2};
+    request_02 = {2, 1, 1};
+    request_03 = {1, 1, 2};
+    request_04 = {1, 1, 3};
 }
 
 void Deadlock::clear() {
@@ -46,32 +51,14 @@ void Deadlock::requestResources() {
     processes[0].requestResources(request_01, resources);
     processes[1].requestResources(request_02, resources);
     processes[2].requestResources(request_03, resources);
-    processes[3].requestResources(request_03, resources);
+    processes[3].requestResources(request_04, resources);
 }
 
 void Deadlock::createDeadlock() {
     requestResources();
+
     deadlockDetector->checkForDeadlock(*deadlockRecovery, processes, resources);
 
-    if (deadlockDetector->isSystemInSafeState(processes, resources)) {
-        std::cout << "Safe" << std::endl;
-    } else {
-        std::cout << "Not Safe" << std::endl;
-
-    }
-    std::vector<int> request1 = {2, 1, 2};  // Process 0 requests resources
-    std::vector<int> request2 = {2, 1, 1};  // Process 1 requests resources
-    std::vector<int> request3 = {1, 1, 2};  // Process 2 requests resources
-    std::vector<int> request4 = {1, 1, 1};  // Process 3 requests resources
-
-    // Allocate resources that will cause a deadlock
-    processes[0].requestResources(request1, resources);  // Process 0 allocated
-    processes[1].requestResources(request2, resources);  // Process 1 allocated
-    processes[2].requestResources(request3, resources);  // Process 2 allocated
-    if (!processes[3].requestResources(request4, resources)) {
-        std::cout << "Deadlock detected: Process 3 cannot allocate resources.\n";
-    }
-    deadlockDetector->checkForDeadlock(*deadlockRecovery, processes, resources);
     if (!window->isTableFilled(window->defaultTable)) {
         emit setTableData(window->defaultTable,
                           {
@@ -99,7 +86,7 @@ void Deadlock::createDeadlock() {
                                   QString::number(processes[3].getPID()),
                                   processes[3].getState(processes, resources),
                                   vectorToQString(processes[3].getAllocatedResources()),
-                                  vectorToQString(request_03),
+                                  vectorToQString(request_04),
                           });
 
     }
@@ -112,8 +99,10 @@ void Deadlock::runBankersAlgorithm() {
     bool status0 = bankersAlgorithm->requestResources(processes[0].getPID(), request_01);
     bool status1 = bankersAlgorithm->requestResources(processes[1].getPID(), request_02);
     bool status2 = bankersAlgorithm->requestResources(processes[2].getPID(), request_03);
-    bool status3 = bankersAlgorithm->requestResources(processes[3].getPID(), request_03);
+    bool status3 = bankersAlgorithm->requestResources(processes[3].getPID(), request_04);
 
+
+    updateTable();
     emit setBankersEntry(processes[0].getPID(), status0);
     emit setBankersEntry(processes[1].getPID(), status1);
     emit setBankersEntry(processes[2].getPID(), status2);
@@ -123,7 +112,12 @@ void Deadlock::runBankersAlgorithm() {
 }
 
 void Deadlock::runInterruptProcess() {
+    clear();
     deadlockRecovery->interruptProcess(processes[0].getPID(), processes, resources);
+
+    processes[1].requestResources(request_02, resources);
+    processes[2].requestResources(request_03, resources);
+    processes[3].requestResources(request_04, resources);
     updateTable();
 
 }
@@ -132,10 +126,6 @@ void Deadlock::updateTable() {
     window->defaultTable->setRowCount(0);
 
     bool deadlockExists = !deadlockDetector->isSystemInSafeState(processes, resources);
-
-    processes[1].requestResources(request_02, resources);
-    processes[2].requestResources(request_03, resources);
-    processes[3].requestResources(request_03, resources);
 
     if (!window->isTableFilled(window->defaultTable)) {
         emit setTableData(window->defaultTable,
@@ -164,7 +154,7 @@ void Deadlock::updateTable() {
                                   QString::number(processes[3].getPID()),
                                   processes[3].getState(processes, resources),
                                   vectorToQString(processes[3].getAllocatedResources()),
-                                  vectorToQString(request_03),
+                                  vectorToQString(request_04),
                           });
 
     }

@@ -64,13 +64,13 @@ QString Process::getState(const std::vector<Process> &processes, const std::vect
         return "Completed";
     }
     if (isInterrupted) {
-        clearInterruption(); // Setzen Sie den Marker zurück, nachdem der Status abgerufen wurde
+        clearInterruption();
         return "Waiting";
     }
     if (!deadlockDetector->isSystemInSafeState(processes, resources)) {
         return "Deadlock";
     }
-    return "Waiting"; // Standardmäßig auf Waiting setzen, wenn keine anderen Bedingungen zutreffen
+    return "Waiting";
 }
 
 void Process::allocateResources(const std::vector<int> &request) {
