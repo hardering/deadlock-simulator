@@ -3,6 +3,7 @@
 
 Simulation::Simulation(Window *qtWindow, Deadlock *deadlock, QObject *parent) : QObject(parent), qtWindow(qtWindow),
                                                                                 deadlock(deadlock), currentTime(0) {
+
     connect(qtWindow, &Window::generateDeadlockRequest, this, &Simulation::createDeadlock);
     connect(deadlock, &Deadlock::setBankersEntry, qtWindow, &Window::updateTableStatus);
 
@@ -10,7 +11,7 @@ Simulation::Simulation(Window *qtWindow, Deadlock *deadlock, QObject *parent) : 
     connect(qtWindow, &Window::runInterruptProcessRequest, this, &Simulation::runInterruptProcess);
     connect(qtWindow, &Window::runAbortProcessRequest, this, &Simulation::runAbortProcess);
     connect(qtWindow, &Window::runAvoidanceStrategyRequest, this, &Simulation::runAvoidanceStrategy);
-    connect(qtWindow, &Window::runProcessEventsRequest, this, &Simulation::startSimulation);
+    connect(qtWindow, &Window::runProcessEventsRequest, this, &Simulation::startEventSchedulingSimulation);
 
     connect(qtWindow, &Window::runScheduleBankersAlgorithmRequest, this, &Simulation::triggerBankersAlgorithm);
     connect(qtWindow, &Window::runScheduleInterruptProcessRequest, this, &Simulation::triggerInterruptProcess);
@@ -66,7 +67,7 @@ void Simulation::updateTimerDisplay() {
     std::cout << "Current Simulation Time: " << currentTime << "s\n";
 }
 
-void Simulation::startSimulation() {
+void Simulation::startEventSchedulingSimulation() {
     if (!timer.isActive()) {
         timer.start();
         std::cout << "Simulation started at time: " << currentTime << std::endl;

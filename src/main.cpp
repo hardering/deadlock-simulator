@@ -6,6 +6,8 @@
 #include "../tests/DeadlockAvoidanceTest.h"
 #include "Deadlock.h"
 #include "Simulation.h"
+#include "Resource.h"
+#include "Process.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
@@ -13,8 +15,9 @@ int main(int argc, char *argv[]) {
     Window window;
     auto *deadlock = new Deadlock(&window);
     auto *simulation = new Simulation(&window, deadlock);
+    deadlock->initializeResourcesAndProcesses();
 
-/*    DeadlockAvoidanceTest avoidanceTests;
+/*  DeadlockAvoidanceTest avoidanceTests;
     avoidanceTests.runAllTests();
 
     DeadlockRecoveryTest recoveryTests;

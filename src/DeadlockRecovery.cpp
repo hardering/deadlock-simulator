@@ -11,7 +11,6 @@ void DeadlockRecovery::interruptProcess(int pid, std::vector<Process> &processes
     }
 }
 
-
 void DeadlockRecovery::rollbackProcess(int pid, std::vector<Process> &processes, std::vector<Resource> &resources) {
     std::cout << "Rolling back process " << pid << " to its initial state...\n";
     processes[pid].releaseResources(resources);
