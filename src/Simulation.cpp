@@ -9,6 +9,7 @@ Simulation::Simulation(Window *qtWindow, Deadlock *deadlock, QObject *parent) : 
     connect(qtWindow, &Window::runBankersAlgorithmRequest, this, &Simulation::runBankersAlgorithm);
     connect(qtWindow, &Window::runInterruptProcessRequest, this, &Simulation::runInterruptProcess);
     connect(qtWindow, &Window::runAbortProcessRequest, this, &Simulation::runAbortProcess);
+    connect(qtWindow, &Window::runAvoidanceStrategyRequest, this, &Simulation::runAvoidanceStrategy);
     connect(qtWindow, &Window::runProcessEventsRequest, this, &Simulation::startSimulation);
 
     connect(qtWindow, &Window::runScheduleBankersAlgorithmRequest, this, &Simulation::triggerBankersAlgorithm);
@@ -34,6 +35,10 @@ void Simulation::runInterruptProcess() {
 
 void Simulation::runAbortProcess() {
     deadlock->runAbortProcess();
+}
+
+void Simulation::runAvoidanceStrategy() {
+    deadlock->runAvoidanceStrategy();
 }
 
 void Simulation::triggerBankersAlgorithm() {

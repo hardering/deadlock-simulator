@@ -32,6 +32,7 @@ private:
     QPushButton *interruptProcessButton;
     QPushButton *abortProcessButton;
     QPushButton *processEventsButton;
+    QPushButton *avoidanceStrategyButton;
 
     QPushButton *scheduleBankersAlgorithmButton;
     QPushButton *scheduleInterruptProcessButton;
@@ -72,6 +73,8 @@ public slots:
 
     void clickOnScheduleAbortProcessButton();
 
+    void clickOnAvoidanceStrategyButton();
+
     void updateTableStatus(int processId, bool requestStatus);
 
 
@@ -95,6 +98,8 @@ signals:
     void runScheduleInterruptProcessRequest();
 
     void runScheduleAbortProcessRequest();
+
+    void runAvoidanceStrategyRequest();
 };
 
 

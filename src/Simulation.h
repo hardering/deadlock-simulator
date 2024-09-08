@@ -30,6 +30,8 @@ public:
 
     void runAbortProcess();
 
+    void runAvoidanceStrategy();
+
     void triggerBankersAlgorithm();
 
     void triggerAbortProcess();

@@ -7,6 +7,7 @@
 #include "Resource.h"
 #include "DeadlockRecovery.h"
 #include "../qt/Window.h"
+#include "DeadlockAvoidance.h"
 
 class Deadlock : public QObject {
 Q_OBJECT
@@ -19,6 +20,7 @@ private:
     std::vector<std::vector<int>> requests;
     DeadlockDetector *deadlockDetector;
     DeadlockRecovery *deadlockRecovery;
+    DeadlockAvoidance *deadlockAvoidance;
     std::string status;
 
 public:
@@ -38,7 +40,7 @@ public:
     std::vector<int> getRequest(int n);
 
     QString getState();
-    
+
 public slots:
 
     void createDeadlock();
@@ -48,6 +50,8 @@ public slots:
     void runInterruptProcess();
 
     void runAbortProcess();
+
+    void runAvoidanceStrategy();
 
 signals:
 

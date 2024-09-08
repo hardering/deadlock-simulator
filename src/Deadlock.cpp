@@ -152,6 +152,24 @@ void Deadlock::runAbortProcess() {
     }
 }
 
+void Deadlock::runAvoidanceStrategy() {
+    for (auto &process: processes) {
+        if (!deadlockAvoidance->requestAllResourcesAtOnce(process, resources)) {
+            std::cout << "Not enough resources to allocate all at once for Process " << process.getPID() << std::endl;
+
+            if (!deadlockAvoidance->requestResourcesInOrder(process, resources)) {
+                std::cout << "Failed to allocate resources in order for Process " << process.getPID() << std::endl;
+
+                if (!deadlockAvoidance->preemptResources(process, processes, resources)) {
+                    std::cout << "Failed to preempt resources for Process " << process.getPID() << std::endl;
+                }
+            }
+        }
+    }
+
+    updateTable();
+}
+
 
 
 

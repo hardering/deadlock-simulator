@@ -86,6 +86,12 @@ QWidget *Window::setInteractionElements() {
     interactionElementsLayout->addWidget(processEventsButton);
     connect(processEventsButton, &QPushButton::clicked, this, &Window::clickOnProcessEventsButton);
 
+
+    avoidanceStrategyButton = new QPushButton("Run Avoidance Strategy", this);
+    avoidanceStrategyButton->setStyleSheet(buttonStyle());
+    interactionElementsLayout->addWidget(avoidanceStrategyButton);
+    connect(avoidanceStrategyButton, &QPushButton::clicked, this, &Window::clickOnAvoidanceStrategyButton);
+
     interactionElementsLayout->addStretch();
 
 
@@ -123,6 +129,10 @@ void Window::clickOnScheduleInterruptProcessButton() {
 
 void Window::clickOnScheduleAbortProcessButton() {
     emit runScheduleAbortProcessRequest();
+}
+
+void Window::clickOnAvoidanceStrategyButton() {
+    emit runAvoidanceStrategyRequest();
 }
 
 
