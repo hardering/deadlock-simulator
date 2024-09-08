@@ -17,11 +17,9 @@ void Deadlock::initializeResourcesAndProcesses() {
             Process(3, {2, 2, 4}, 1),
     };
 
-    request_01 = {2, 1, 2};
-    request_02 = {2, 1, 1};
-    request_03 = {1, 1, 2};
-    request_04 = {1, 1, 3};
-}
+    updateTable();
+};
+
 
 void Deadlock::clear() {
     for (auto &resource: resources) {
@@ -33,9 +31,7 @@ void Deadlock::clear() {
         process.releaseResources(resources);
     }
 
-    deadlockDetector->checkForDeadlock(*deadlockRecovery, processes, resources);
-    std::cout << "Deadlock got cleared." << std::endl;
-
+    initializeResourcesAndProcesses();
 }
 
 QString Deadlock::vectorToQString(const std::vector<int> &vec) {
@@ -46,49 +42,21 @@ QString Deadlock::vectorToQString(const std::vector<int> &vec) {
     return result.trimmed();
 }
 
-void Deadlock::requestResources() {
+void Deadlock::createDeadlock() {
+    request_01 = {2, 1, 2};
+    request_02 = {2, 1, 1};
+    request_03 = {1, 1, 2};
+    request_04 = {1, 1, 3};
+
     processes[0].requestResources(request_01, resources);
     processes[1].requestResources(request_02, resources);
     processes[2].requestResources(request_03, resources);
     processes[3].requestResources(request_04, resources);
-}
-
-void Deadlock::createDeadlock() {
-    requestResources();
 
     deadlockDetector->checkForDeadlock(*deadlockRecovery, processes, resources);
 
-    if (!window->isTableFilled(window->defaultTable)) {
-        emit setTableData(window->defaultTable,
-                          {
-                                  QString::number(processes[0].getPID()),
-                                  processes[0].getState(processes, resources),
-                                  vectorToQString(processes[0].getAllocatedResources()),
-                                  vectorToQString(processes[0].getCurrentRequest()),
-                          });
-        emit setTableData(window->defaultTable,
-                          {
-                                  QString::number(processes[1].getPID()),
-                                  processes[1].getState(processes, resources),
-                                  vectorToQString(processes[1].getAllocatedResources()),
-                                  vectorToQString(processes[1].getCurrentRequest()),
-                          });
-        emit setTableData(window->defaultTable,
-                          {
-                                  QString::number(processes[2].getPID()),
-                                  processes[2].getState(processes, resources),
-                                  vectorToQString(processes[2].getAllocatedResources()),
-                                  vectorToQString(processes[2].getCurrentRequest()),
-                          });
-        emit setTableData(window->defaultTable,
-                          {
-                                  QString::number(processes[3].getPID()),
-                                  processes[3].getState(processes, resources),
-                                  vectorToQString(processes[3].getAllocatedResources()),
-                                  vectorToQString(processes[3].getCurrentRequest()),
-                          });
+    updateTable();
 
-    }
 }
 
 void Deadlock::runBankersAlgorithm() {

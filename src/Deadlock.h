@@ -34,9 +34,7 @@ public:
     QString vectorToQString(const std::vector<int> &vector);
 
     void updateTable();
-
-    void requestResources();
-
+    
     std::vector<int> getRequest(int n);
 
     QString getState();

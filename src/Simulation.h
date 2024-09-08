@@ -14,6 +14,8 @@ Q_OBJECT
 private:
     Window *qtWindow;
     Deadlock *deadlock;
+    std::vector<Resource> resources;
+    std::vector<Process> processes;
 
     int currentTime = 0;
     QTimer timer;
@@ -44,9 +46,7 @@ public:
 
     void updateTimerDisplay();
 
-    void startSimulation();
-
-
+    void startEventSchedulingSimulation();
 };
 
 #endif
