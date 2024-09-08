@@ -15,15 +15,20 @@ implementierte API stellt sicher, dass diese Algorithmen in der Simulationsumgeb
 Bedingungen evaluiert werden können. Ein grafisches Interface visualisiert eine Tabelle, welche die Zustände der
 Prozesse und Ressourcen während der Ausführung der verschiedenen Strategien demonstriert.
 
----  
+## Projekt aufsetzen
+
+Für dieses Projekt benötigt es das Framework Qt mit der Version ``6.5.1``, welches auf dem Gerät installiert sein muss.
+Anschließend benötigt das Projekt für die erfolgreiche Kompilierung noch den Installationspfad.
+
+Für MacOS:
+
+``cmake -DCMAKE_PREFIX_PATH="~/Qt/6.5.1/macos" .``
 
 ## Benutzte Technologien
 
 - C/C++
 
 - Qt-Framework zur Erstellung der graphischen Benutzeroberfläche
-
----
 
 ## Mitgewirkte Personen
 
