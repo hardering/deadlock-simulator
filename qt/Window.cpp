@@ -11,7 +11,7 @@ Window::Window(QWidget *parent)
 
 
     setWindowTitle("Deadlock Simulator");
-    resize(800, 300);
+    resize(800, 500);
 
     auto *tablesGroup = new QGroupBox(this);
     auto *main = new QHBoxLayout(this);
@@ -22,7 +22,7 @@ Window::Window(QWidget *parent)
     main->addWidget(tablesGroup, 1);
 
     QWidget *interactionContainer = setInteractionElements();
-    interactionContainer->setMinimumSize(200, 200);
+    interactionContainer->setMinimumSize(300, 500);
     main->addWidget(interactionContainer, 1);
 
     createEmptyTable();
@@ -63,6 +63,29 @@ QWidget *Window::setInteractionElements() {
     connect(abortProcessButton, &QPushButton::clicked, this, &Window::clickOnAbortProcessButton);
 
 
+    scheduleBankersAlgorithmButton = new QPushButton("Schedule Banker's Algorithm", this);
+    scheduleBankersAlgorithmButton->setStyleSheet(buttonStyle());
+    interactionElementsLayout->addWidget(scheduleBankersAlgorithmButton);
+    connect(scheduleBankersAlgorithmButton, &QPushButton::clicked, this,
+            &Window::clickOnScheduleBankersAlgorithmButton);
+
+    scheduleInterruptProcessButton = new QPushButton("Schedule Interrupt Process", this);
+    scheduleInterruptProcessButton->setStyleSheet(buttonStyle());
+    interactionElementsLayout->addWidget(scheduleInterruptProcessButton);
+    connect(scheduleInterruptProcessButton, &QPushButton::clicked, this,
+            &Window::clickOnScheduleInterruptProcessButton);
+
+    scheduleAbortProcessButton = new QPushButton("Schedule Abort Process", this);
+    scheduleAbortProcessButton->setStyleSheet(buttonStyle());
+    interactionElementsLayout->addWidget(scheduleAbortProcessButton);
+    connect(scheduleAbortProcessButton, &QPushButton::clicked, this,
+            &Window::clickOnScheduleAbortProcessButton);
+
+    processEventsButton = new QPushButton("Process Events", this);
+    processEventsButton->setStyleSheet(buttonStyle());
+    interactionElementsLayout->addWidget(processEventsButton);
+    connect(processEventsButton, &QPushButton::clicked, this, &Window::clickOnProcessEventsButton);
+
     interactionElementsLayout->addStretch();
 
 
@@ -86,11 +109,27 @@ void Window::clickOnAbortProcessButton() {
     emit runAbortProcessRequest();
 }
 
+void Window::clickOnProcessEventsButton() {
+    emit runProcessEventsRequest();
+}
+
+void Window::clickOnScheduleBankersAlgorithmButton() {
+    emit runScheduleBankersAlgorithmRequest();
+}
+
+void Window::clickOnScheduleInterruptProcessButton() {
+    emit runScheduleInterruptProcessRequest();
+}
+
+void Window::clickOnScheduleAbortProcessButton() {
+    emit runScheduleAbortProcessRequest();
+}
+
 
 void Window::createEmptyTable() {
     defaultTable = createTable("Process and Resource allocation",
                                {"Process Id", "State", "Allocated",
-                                "Requested Resources", "Banker's State"});
+                                "Requested", "Banker's State"});
 }
 
 QTableWidget *Window::createTable(const QString &title, const QStringList &headers) {
@@ -101,7 +140,7 @@ QTableWidget *Window::createTable(const QString &title, const QStringList &heade
     table->setHorizontalHeaderLabels(headers);
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     table->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    table->setMinimumSize(700, 200);
+    table->setMinimumSize(500, 500);
 
     table->setStyleSheet("gridline-color: darkgrey;");
 

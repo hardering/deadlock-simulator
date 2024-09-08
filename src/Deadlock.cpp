@@ -124,8 +124,7 @@ void Deadlock::runInterruptProcess() {
 void Deadlock::updateTable() {
     window->defaultTable->setRowCount(0);
 
-    for (int i = 0; i < processes.size(); ++i) {
-        auto &process = processes[i];
+    for (auto &process: processes) {
         emit setTableData(window->defaultTable,
                           {
                                   QString::number(process.getPID()),
@@ -141,7 +140,6 @@ void Deadlock::updateTable() {
     } else {
         std::cout << "No deadlock after updating the table." << std::endl;
     }
-
 }
 
 void Deadlock::runAbortProcess() {

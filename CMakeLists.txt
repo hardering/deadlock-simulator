@@ -47,6 +47,10 @@ add_executable(deadlock_simulator
         src/Deadlock.h
         src/Simulation.cpp
         src/Simulation.h
+        src/Event.cpp
+        src/Event.h
+        src/EventQueue.cpp
+        src/EventQueue.h
 )
 
 target_link_libraries(deadlock_simulator

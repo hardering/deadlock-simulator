@@ -31,6 +31,11 @@ private:
     QPushButton *bankersAlgorithmButton;
     QPushButton *interruptProcessButton;
     QPushButton *abortProcessButton;
+    QPushButton *processEventsButton;
+
+    QPushButton *scheduleBankersAlgorithmButton;
+    QPushButton *scheduleInterruptProcessButton;
+    QPushButton *scheduleAbortProcessButton;
 
 public:
     QTableWidget *defaultTable;
@@ -59,6 +64,14 @@ public slots:
 
     void clickOnAbortProcessButton();
 
+    void clickOnProcessEventsButton();
+
+    void clickOnScheduleBankersAlgorithmButton();
+
+    void clickOnScheduleInterruptProcessButton();
+
+    void clickOnScheduleAbortProcessButton();
+
     void updateTableStatus(int processId, bool requestStatus);
 
 
@@ -74,6 +87,14 @@ signals:
     void runInterruptProcessRequest();
 
     void runAbortProcessRequest();
+
+    void runProcessEventsRequest();
+
+    void runScheduleBankersAlgorithmRequest();
+
+    void runScheduleInterruptProcessRequest();
+
+    void runScheduleAbortProcessRequest();
 };
 
 
