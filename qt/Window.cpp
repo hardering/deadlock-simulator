@@ -57,6 +57,11 @@ QWidget *Window::setInteractionElements() {
     interactionElementsLayout->addWidget(interruptProcessButton);
     connect(interruptProcessButton, &QPushButton::clicked, this, &Window::clickOnInterruptProcessButton);
 
+    abortProcessButton = new QPushButton("Run Abort Process", this);
+    abortProcessButton->setStyleSheet(buttonStyle());
+    interactionElementsLayout->addWidget(abortProcessButton);
+    connect(abortProcessButton, &QPushButton::clicked, this, &Window::clickOnAbortProcessButton);
+
 
     interactionElementsLayout->addStretch();
 
@@ -75,6 +80,10 @@ void Window::clickOnBankersAlgorithmButton() {
 
 void Window::clickOnInterruptProcessButton() {
     emit runInterruptProcessRequest();
+}
+
+void Window::clickOnAbortProcessButton() {
+    emit runAbortProcessRequest();
 }
 
 

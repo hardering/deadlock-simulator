@@ -6,6 +6,7 @@ Simulation::Simulation(Window *qtWindow, Deadlock *deadlock, QObject *parent) : 
     connect(qtWindow, &Window::generateDeadlockRequest, this, &Simulation::createDeadlock);
     connect(qtWindow, &Window::runBankersAlgorithmRequest, this, &Simulation::runBankersAlgorithm);
     connect(qtWindow, &Window::runInterruptProcessRequest, this, &Simulation::runInterruptProcess);
+    connect(qtWindow, &Window::runAbortProcessRequest, this, &Simulation::runAbortProcess);
     connect(deadlock, &Deadlock::setBankersEntry, qtWindow, &Window::updateTableStatus);
 }
 
@@ -19,4 +20,8 @@ void Simulation::runBankersAlgorithm() {
 
 void Simulation::runInterruptProcess() {
     deadlock->runInterruptProcess();
+}
+
+void Simulation::runAbortProcess() {
+    deadlock->runAbortProcess();
 }

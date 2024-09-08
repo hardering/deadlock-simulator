@@ -124,7 +124,6 @@ void Deadlock::runInterruptProcess() {
 
 void Deadlock::updateTable() {
     window->defaultTable->setRowCount(0);
-
     bool deadlockExists = !deadlockDetector->isSystemInSafeState(processes, resources);
 
     if (!window->isTableFilled(window->defaultTable)) {
@@ -163,6 +162,16 @@ void Deadlock::updateTable() {
         std::cout << "Deadlock exists after interrupting the process." << std::endl;
     } else {
         std::cout << "No deadlock present after intervention." << std::endl;
+    }
+}
+
+void Deadlock::runAbortProcess() {
+    int pid = 0;
+    if (pid < processes.size()) {
+        deadlockRecovery->abortProcess(pid, processes, resources);
+        updateTable();
+    } else {
+        std::cerr << "Cannot abort process due to invalid ID." << std::endl;
     }
 }
 

@@ -21,6 +21,8 @@ public:
 
     void runInterruptProcess();
 
+    void runAbortProcess();
+
 
 };
 

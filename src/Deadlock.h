@@ -38,8 +38,7 @@ public:
     std::vector<int> getRequest(int n);
 
     QString getState();
-
-
+    
 public slots:
 
     void createDeadlock();
@@ -47,6 +46,8 @@ public slots:
     void runBankersAlgorithm();
 
     void runInterruptProcess();
+
+    void runAbortProcess();
 
 signals:
 
