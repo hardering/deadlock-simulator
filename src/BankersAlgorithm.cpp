@@ -22,7 +22,6 @@ bool BankersAlgorithm::requestResources(int pid, const std::vector<int> &request
         return false;
     }
 
-    proc.allocateResources(request);
     std::cout << "Resources allocated, checking system state..." << std::endl;
 
     if (isSystemInSafeState()) {
