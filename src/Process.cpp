@@ -3,7 +3,8 @@
 
 Process::Process(int pid, const std::vector<int> &maxResources, int priority)
         : pid(pid), priority(priority), maxResources(maxResources),
-          allocatedResources(maxResources.size(), 0), neededResources(maxResources) {}
+          allocatedResources(maxResources.size(), 0), neededResources(maxResources),
+          initialNeededResources(maxResources), initialAllocatedResources(maxResources.size(), 0) {}
 
 bool Process::requestResources(const std::vector<int> &request, std::vector<Resource> &resources) {
     currentRequest = request;
@@ -31,6 +32,10 @@ const std::vector<int> &Process::getCurrentRequest() const {
     return currentRequest;
 }
 
+void Process::reset(){
+    allocatedResources = initialAllocatedResources;
+    neededResources = initialNeededResources;
+}
 void Process::releaseResources(std::vector<Resource> &resources) {
     for (size_t i = 0; i < allocatedResources.size(); ++i) {
         resources[i].release(allocatedResources[i]);

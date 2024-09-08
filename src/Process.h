@@ -14,10 +14,13 @@ private:
     std::vector<int> maxResources;
     std::vector<int> allocatedResources;
     std::vector<int> neededResources;
+    std::vector<int> currentRequest;
+    std::vector<int> initialNeededResources;
+    std::vector<int> initialAllocatedResources;
     std::string status;
     DeadlockDetector *deadlockDetector;
     bool isInterrupted = false;
-    std::vector<int> currentRequest;
+
 
 public:
     Process(int id, const std::vector<int> &maxResources, int priority);
@@ -43,6 +46,8 @@ public:
     void allocateResources(const std::vector<int> &request);
 
     void releaseResources(const std::vector<int> &request);
+
+    void reset();
 
     void interrupt();
 
