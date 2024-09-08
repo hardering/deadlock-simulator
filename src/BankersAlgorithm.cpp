@@ -30,12 +30,12 @@ bool BankersAlgorithm::requestResources(int pid, const std::vector<int> &request
         return true;
     } else {
         std::cout << "System would enter an unsafe state, rolling back." << std::endl;
-        proc.releaseResources(request);
+        processes[pid].releaseResources(resources);
+        processes[pid].reset();
         std::cout << "Rollback completed." << std::endl;
         return false;
     }
 }
-
 
 bool BankersAlgorithm::canAllocateResources(const Process &proc, const std::vector<int> &request) {
     for (size_t i = 0; i < request.size(); ++i) {

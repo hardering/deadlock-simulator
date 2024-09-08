@@ -56,6 +56,7 @@ int Process::getPriority() const {
 const std::vector<int> &Process::getMaxResources() const {
     return maxResources;
 }
+
 void Process::reset() {
     allocatedResources = initialAllocatedResources;
     neededResources = initialNeededResources;

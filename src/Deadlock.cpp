@@ -68,12 +68,13 @@ void Deadlock::runBankersAlgorithm() {
     bool status2 = bankersAlgorithm->requestResources(processes[2].getPID(), request_03);
     bool status3 = bankersAlgorithm->requestResources(processes[3].getPID(), request_04);
 
-
     updateTable();
+
     emit setBankersEntry(processes[0].getPID(), status0);
     emit setBankersEntry(processes[1].getPID(), status1);
     emit setBankersEntry(processes[2].getPID(), status2);
     emit setBankersEntry(processes[3].getPID(), status3);
+
 
     delete bankersAlgorithm;
 }
@@ -134,7 +135,6 @@ void Deadlock::runAvoidanceStrategy() {
             }
         }
     }
-
     updateTable();
 }
 

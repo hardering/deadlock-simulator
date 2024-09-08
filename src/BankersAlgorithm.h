@@ -22,6 +22,4 @@ public:
     bool isSystemInSafeState();
 
     bool canProcessComplete(const Process &proc, const std::vector<int> &work);
-
-
 };

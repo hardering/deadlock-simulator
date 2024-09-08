@@ -6,8 +6,6 @@
 #include "../tests/DeadlockAvoidanceTest.h"
 #include "Deadlock.h"
 #include "Simulation.h"
-#include "Resource.h"
-#include "Process.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
