@@ -1,9 +1,16 @@
 #include "DeadlockRecovery.h"
 
 void DeadlockRecovery::interruptProcess(int pid, std::vector<Process> &processes, std::vector<Resource> &resources) {
-    std::cout << "Interrupting process " << pid << " to resolve deadlock...\n";
-    processes[pid].releaseResources(resources);
+    for (auto &process: processes) {
+        if (process.getPID() == pid) {
+            process.interrupt();
+            process.releaseResources(resources);
+            std::cout << "Interrupting process " << pid << " to resolve deadlock...\n";
+            break;
+        }
+    }
 }
+
 
 void DeadlockRecovery::rollbackProcess(int pid, std::vector<Process> &processes, std::vector<Resource> &resources) {
     std::cout << "Rolling back process " << pid << " to its initial state...\n";

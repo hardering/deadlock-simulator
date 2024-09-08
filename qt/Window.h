@@ -29,6 +29,7 @@ private:
     QPushButton *generateDeadlockSituationButton;
     QPushButton *resetButton;
     QPushButton *bankersAlgorithmButton;
+    QPushButton *interruptProcessButton;
 
 public:
     QTableWidget *defaultTable;
@@ -49,7 +50,14 @@ public slots:
 
     void setTableData(QTableWidget *table, const QList<QString> &data);
 
-    void onResetClicked();
+    void clickOnResetButton();
+
+    void clickOnBankersAlgorithmButton();
+
+    void clickOnInterruptProcessButton();
+
+    void updateTableStatus(int processId, bool requestStatus);
+
 
 signals:
 
@@ -58,6 +66,9 @@ signals:
 
     void resetTableRequest();
 
+    void runBankersAlgorithmRequest();
+
+    void runInterruptProcessRequest();
 };
 
 

@@ -15,6 +15,11 @@ private:
     std::vector<Resource> resources;
     std::vector<Process> processes;
     Window *window;
+    std::vector<int> request_01, request_02, request_03;
+    std::vector<std::vector<int>> requests;
+    DeadlockDetector *deadlockDetector;
+    DeadlockRecovery *deadlockRecovery;
+    std::string status;
 
 public:
 
@@ -26,11 +31,26 @@ public:
 
     QString vectorToQString(const std::vector<int> &vector);
 
+    void updateTable();
+
+    void requestResources();
+
+    std::vector<int> getRequest(int n);
+
+    QString getState();
+
+
 public slots:
 
     void createDeadlock();
 
+    void runBankersAlgorithm();
+
+    void runInterruptProcess();
+
 signals:
 
     void setTableData(QTableWidget *table, const QList<QString> &data);
+
+    void setBankersEntry(int processId, bool status);
 };

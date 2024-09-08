@@ -14,8 +14,10 @@ private:
     std::vector<int> maxResources;
     std::vector<int> allocatedResources;
     std::vector<int> neededResources;
-    QString status;
-    DeadlockDetector *deadlock;
+    std::string status;
+    DeadlockDetector *deadlockDetector;
+    bool isInterrupted = false;
+
 public:
     Process(int id, const std::vector<int> &maxResources, int priority);
 
@@ -29,15 +31,21 @@ public:
 
     int getPriority() const;
 
-    const std::vector<int> &getNeededResources() const;
-
     const std::vector<int> &getMaxResources() const;
 
-    const std::vector<int> &getAllocatedResources() const;
+    const std::vector<int> &getAllocatedResources() const { return allocatedResources; }
 
-    QString getAllocatedResourcesAsString() const;
+    std::vector<int> &getNeededResources() { return neededResources; }
 
-    QString getState(std::vector<Process> &processes, std::vector<Resource> &resources);
-    
+    const std::vector<int> &getNeededResources() const { return neededResources; }
 
+    QString getState(const std::vector<Process> &processes, const std::vector<Resource> &resources);
+
+    void allocateResources(const std::vector<int> &request);
+
+    void releaseResources(const std::vector<int> &request);
+
+    void interrupt();
+
+    void clearInterruption();
 };

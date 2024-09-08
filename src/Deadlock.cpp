@@ -1,5 +1,6 @@
 #include <Deadlock.h>
 #include <QString>
+#include "BankersAlgorithm.h"
 
 Deadlock::Deadlock(Window *window) : window(window) {
     initializeResourcesAndProcesses();
@@ -9,14 +10,26 @@ Deadlock::Deadlock(Window *window) : window(window) {
 
 void Deadlock::initializeResourcesAndProcesses() {
     resources = {
-            Resource(6), Resource(4), Resource(7)
+            Resource(10), Resource(10), Resource(10)
     };
     processes = {
             Process(0, {3, 2, 2}, 1),
-            Process(1, {2, 2, 2}, 2),
-            Process(2, {3, 1, 3}, 3),
-            Process(3, {2, 2, 2}, 1),
+            Process(1, {2, 2, 2}, 1),
+            Process(2, {3, 1, 3}, 1),
+            Process(3, {3, 1, 3}, 1),
     };
+
+    request_01 = {3, 2, 2};
+    request_02 = {2, 2, 2};
+    request_03 = {3, 1, 3};
+
+    requests = {
+            request_01,
+            request_02,
+            request_03,
+            request_03,
+    };
+
 }
 
 void Deadlock::clear() {
@@ -29,13 +42,10 @@ void Deadlock::clear() {
         process.releaseResources(resources);
     }
 
-    auto *deadlockDetector = new DeadlockDetector();
-    auto *deadlockRecovery = new DeadlockRecovery();
     deadlockDetector->checkForDeadlock(*deadlockRecovery, processes, resources);
     std::cout << "Deadlock got cleared." << std::endl;
 
 }
-
 
 QString Deadlock::vectorToQString(const std::vector<int> &vec) {
     QString result;
@@ -45,51 +55,130 @@ QString Deadlock::vectorToQString(const std::vector<int> &vec) {
     return result.trimmed();
 }
 
+void Deadlock::requestResources() {
+    processes[0].requestResources(request_01, resources);
+    processes[1].requestResources(request_02, resources);
+    processes[2].requestResources(request_03, resources);
+    processes[3].requestResources(request_03, resources);
+}
+
 void Deadlock::createDeadlock() {
-    std::vector<int> request1 = {2, 1, 2};
-    std::vector<int> request2 = {2, 1, 1};
-    std::vector<int> request3 = {1, 1, 2};
-    std::vector<int> request4 = {1, 1, 1};
-
-    processes[0].requestResources(request1, resources);
-    processes[1].requestResources(request2, resources);
-    processes[2].requestResources(request3, resources);
-    processes[3].requestResources(request3, resources);
-
-    auto *deadlockDetector = new DeadlockDetector();
-    auto *deadlockRecovery = new DeadlockRecovery();
+    requestResources();
     deadlockDetector->checkForDeadlock(*deadlockRecovery, processes, resources);
 
+    if (deadlockDetector->isSystemInSafeState(processes, resources)) {
+        std::cout << "Safe" << std::endl;
+    } else {
+        std::cout << "Not Safe" << std::endl;
+
+    }
 
     if (!window->isTableFilled(window->defaultTable)) {
         emit setTableData(window->defaultTable,
                           {
                                   QString::number(processes[0].getPID()),
                                   processes[0].getState(processes, resources),
-                                  vectorToQString(processes[0].getNeededResources()),
-                                  vectorToQString(request1),
+                                  vectorToQString(processes[0].getAllocatedResources()),
+                                  vectorToQString(request_01),
                           });
         emit setTableData(window->defaultTable,
                           {
                                   QString::number(processes[1].getPID()),
                                   processes[1].getState(processes, resources),
-                                  vectorToQString(processes[1].getNeededResources()),
-                                  vectorToQString(request2),
+                                  vectorToQString(processes[1].getAllocatedResources()),
+                                  vectorToQString(request_02),
                           });
         emit setTableData(window->defaultTable,
                           {
                                   QString::number(processes[2].getPID()),
                                   processes[2].getState(processes, resources),
-                                  vectorToQString(processes[2].getNeededResources()),
-                                  vectorToQString(request3),
+                                  vectorToQString(processes[2].getAllocatedResources()),
+                                  vectorToQString(request_03),
                           });
         emit setTableData(window->defaultTable,
                           {
                                   QString::number(processes[3].getPID()),
                                   processes[3].getState(processes, resources),
-                                  vectorToQString(processes[3].getNeededResources()),
-                                  vectorToQString(request3),
+                                  vectorToQString(processes[3].getAllocatedResources()),
+                                  vectorToQString(request_03),
                           });
 
     }
 }
+
+void Deadlock::runBankersAlgorithm() {
+    auto bankersAlgorithm = new BankersAlgorithm(processes, resources);
+    deadlockDetector->checkForDeadlock(*deadlockRecovery, processes, resources);
+
+    bool status0 = bankersAlgorithm->requestResources(processes[0].getPID(), request_01);
+    bool status1 = bankersAlgorithm->requestResources(processes[1].getPID(), request_02);
+    bool status2 = bankersAlgorithm->requestResources(processes[2].getPID(), request_03);
+    bool status3 = bankersAlgorithm->requestResources(processes[3].getPID(), request_03);
+
+    emit setBankersEntry(processes[0].getPID(), status0);
+    emit setBankersEntry(processes[1].getPID(), status1);
+    emit setBankersEntry(processes[2].getPID(), status2);
+    emit setBankersEntry(processes[3].getPID(), status3);
+
+    delete bankersAlgorithm;
+}
+
+void Deadlock::runInterruptProcess() {
+    deadlockRecovery->interruptProcess(processes[0].getPID(), processes, resources);
+    updateTable();
+
+}
+
+void Deadlock::updateTable() {
+    window->defaultTable->setRowCount(0);
+
+    bool deadlockExists = !deadlockDetector->isSystemInSafeState(processes, resources);
+
+    processes[1].requestResources(request_02, resources);
+    processes[2].requestResources(request_03, resources);
+    processes[3].requestResources(request_03, resources);
+
+    if (!window->isTableFilled(window->defaultTable)) {
+        emit setTableData(window->defaultTable,
+                          {
+                                  QString::number(processes[0].getPID()),
+                                  processes[0].getState(processes, resources),
+                                  vectorToQString(processes[0].getAllocatedResources()),
+                                  vectorToQString(request_01),
+                          });
+        emit setTableData(window->defaultTable,
+                          {
+                                  QString::number(processes[1].getPID()),
+                                  processes[1].getState(processes, resources),
+                                  vectorToQString(processes[1].getAllocatedResources()),
+                                  vectorToQString(request_02),
+                          });
+        emit setTableData(window->defaultTable,
+                          {
+                                  QString::number(processes[2].getPID()),
+                                  processes[2].getState(processes, resources),
+                                  vectorToQString(processes[2].getAllocatedResources()),
+                                  vectorToQString(request_03),
+                          });
+        emit setTableData(window->defaultTable,
+                          {
+                                  QString::number(processes[3].getPID()),
+                                  processes[3].getState(processes, resources),
+                                  vectorToQString(processes[3].getAllocatedResources()),
+                                  vectorToQString(request_03),
+                          });
+
+    }
+
+    if (deadlockExists) {
+        std::cout << "Deadlock exists after interrupting the process." << std::endl;
+    } else {
+        std::cout << "No deadlock present after intervention." << std::endl;
+    }
+}
+
+
+
+
+
+

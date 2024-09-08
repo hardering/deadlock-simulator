@@ -1,7 +1,8 @@
 #include "DeadlockDetector.h"
 #include "DeadlockRecovery.h"
 
-int DeadlockDetector::isSystemInSafeState(std::vector<Process> &processes, std::vector<Resource> &resources) {
+int
+DeadlockDetector::isSystemInSafeState(const std::vector<Process> &processes, const std::vector<Resource> &resources) {
     std::vector<int> work(resources.size());
     std::vector<bool> finish(processes.size(), false);
 
@@ -18,7 +19,7 @@ int DeadlockDetector::isSystemInSafeState(std::vector<Process> &processes, std::
                 progressMade = true;
 
                 for (size_t j = 0; j < work.size(); ++j) {
-                    work[j] += processes[i].getNeededResources()[j];
+                    work[j] += processes[i].getAllocatedResources()[j];
                 }
             }
         }
@@ -34,17 +35,20 @@ int DeadlockDetector::isSystemInSafeState(std::vector<Process> &processes, std::
 
 bool DeadlockDetector::canProcessComplete(const Process &process, const std::vector<int> &work) const {
     const std::vector<int> &neededResources = process.getNeededResources();
-    return std::all_of(neededResources.begin(), neededResources.end(),
-                       [&work, &neededResources, idx = 0](int need) mutable {
-                           return need <= work[idx++];
-                       });
+    for (size_t i = 0; i < neededResources.size(); ++i) {
+        if (neededResources[i] > work[i]) {
+            return false;
+        }
+    }
+    return true;
 }
 
-void DeadlockDetector::checkForDeadlock(DeadlockRecovery &recovery, const std::vector<Process> &processes,
-                                        const std::vector<Resource> &resources) {
-    if (recovery.detectDeadlock(processes, resources)) {
-        std::cout << "Deadlock detected.\n";
+void DeadlockDetector::checkForDeadlock(DeadlockRecovery &recovery, std::vector<Process> &processes,
+                                        std::vector<Resource> &resources) {
+    int deadlockProcess = isSystemInSafeState(processes, resources);
+    if (deadlockProcess != -1) {
+        std::cout << "Deadlock detected. Deadlocked process ID: " << deadlockProcess << std::endl;
     } else {
-        std::cout << "No deadlock detected.\n";
+        std::cout << "No deadlock detected." << std::endl;
     }
 }

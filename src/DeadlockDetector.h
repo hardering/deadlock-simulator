@@ -12,11 +12,12 @@ class Process;
 class Resource;
 
 class DeadlockDetector {
-public:
-    int isSystemInSafeState(std::vector<Process> &processes, std::vector<Resource> &resources);
 
-    void checkForDeadlock(DeadlockRecovery &recovery, const std::vector<Process> &processes,
-                          const std::vector<Resource> &resources);
+public:
+    int isSystemInSafeState(const std::vector<Process> &processes, const std::vector<Resource> &resources);
+
+    void checkForDeadlock(DeadlockRecovery &recovery, std::vector<Process> &processes,
+                          std::vector<Resource> &resources);
 
 private:
     bool canProcessComplete(const Process &process, const std::vector<int> &work) const;

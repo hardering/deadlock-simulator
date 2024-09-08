@@ -16,4 +16,12 @@ public:
     bool requestResources(int pid, const std::vector<int> &request);
 
     void releaseResources(int pid);
+
+    bool canAllocateResources(const Process &proc, const std::vector<int> &request);
+
+    bool isSystemInSafeState();
+
+    bool canProcessComplete(const Process &proc, const std::vector<int> &work);
+
+
 };

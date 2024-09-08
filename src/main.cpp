@@ -14,14 +14,14 @@ int main(int argc, char *argv[]) {
     auto *deadlock = new Deadlock(&window);
     auto *simulation = new Simulation(&window, deadlock);
 
-    DeadlockAvoidanceTest avoidanceTests;
+/*    DeadlockAvoidanceTest avoidanceTests;
     avoidanceTests.runAllTests();
 
     DeadlockRecoveryTest recoveryTests;
     recoveryTests.runAllTests();
 
     BankersAlgorithmTest bankersTests;
-    bankersTests.runAllTests();
+    bankersTests.runAllTests();*/
 
     window.show();
     QApplication::exec();

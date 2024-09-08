@@ -1,24 +1,31 @@
 #include <QString>
 #include "Process.h"
 
-Process::Process(int pid, const std::vector<int> &maxResources, int priority) : pid(pid), priority(priority),
-                                                                                maxResources(maxResources),
-                                                                                allocatedResources(maxResources.size(),
-                                                                                                   0),
-                                                                                neededResources(maxResources) {}
+Process::Process(int pid, const std::vector<int> &maxResources, int priority)
+        : pid(pid), priority(priority), maxResources(maxResources),
+          allocatedResources(maxResources.size(), 0), neededResources(maxResources) {}
 
 bool Process::requestResources(const std::vector<int> &request, std::vector<Resource> &resources) {
+    for (size_t i = 0; i < request.size(); ++i) {
+        if (request[i] > maxResources[i]) {
+            std::cerr << "Error: Process " << pid << " requested more resources than it can hold" << std::endl;
+            return false;
+        }
+    }
+
     for (size_t i = 0; i < request.size(); ++i) {
         if (request[i] > neededResources[i] || !resources[i].allocate(request[i])) {
             return false;
         }
     }
+
     for (size_t i = 0; i < request.size(); ++i) {
         allocatedResources[i] += request[i];
         neededResources[i] -= request[i];
     }
     return true;
 }
+
 
 void Process::releaseResources(std::vector<Resource> &resources) {
     for (size_t i = 0; i < allocatedResources.size(); ++i) {
@@ -44,30 +51,39 @@ const std::vector<int> &Process::getMaxResources() const {
     return maxResources;
 }
 
-const std::vector<int> &Process::getAllocatedResources() const {
-    return allocatedResources;
+void Process::interrupt() {
+    isInterrupted = true;
 }
 
-QString Process::getAllocatedResourcesAsString() const {
-    for (int resource: allocatedResources) {
-        if (resource > 0) {
-            return "yes";
-        }
-    }
-    return "no";
+void Process::clearInterruption() {
+    isInterrupted = false;
 }
 
-QString Process::getState(std::vector<Process> &processes, std::vector<Resource> &resources) {
+QString Process::getState(const std::vector<Process> &processes, const std::vector<Resource> &resources) {
     if (isFinished()) {
-        status = "Completed";
-    } else if (getPID() == deadlock->isSystemInSafeState(processes, resources)) {
-        status = "Deadlock";
-    } else if (std::any_of(neededResources.begin(), neededResources.end(), [](int needed) { return needed > 0; })) {
-        status = "Waiting";
+        return "Completed";
     }
-    return status;
+    if (isInterrupted) {
+        clearInterruption(); // Setzen Sie den Marker zurück, nachdem der Status abgerufen wurde
+        return "Waiting";
+    }
+    if (!deadlockDetector->isSystemInSafeState(processes, resources)) {
+        return "Deadlock";
+    }
+    return "Waiting"; // Standardmäßig auf Waiting setzen, wenn keine anderen Bedingungen zutreffen
 }
 
-const std::vector<int> &Process::getNeededResources() const {
-    return neededResources;
+void Process::allocateResources(const std::vector<int> &request) {
+    for (size_t i = 0; i < request.size(); ++i) {
+        allocatedResources[i] += request[i];
+        neededResources[i] -= request[i];
+    }
 }
+
+void Process::releaseResources(const std::vector<int> &request) {
+    for (size_t i = 0; i < request.size(); ++i) {
+        allocatedResources[i] -= request[i];
+        neededResources[i] += request[i];
+    }
+};
+

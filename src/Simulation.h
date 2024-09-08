@@ -17,6 +17,11 @@ public:
 
     void createDeadlock();
 
+    void runBankersAlgorithm();
+
+    void runInterruptProcess();
+
+
 };
 
 #endif
