@@ -3,7 +3,9 @@
 
 Process::Process(int pid, const std::vector<int> &maxResources, int priority)
         : pid(pid), priority(priority), maxResources(maxResources),
-          allocatedResources(maxResources.size(), 0), neededResources(maxResources) {}
+          allocatedResources(maxResources.size(), 0), neededResources(maxResources),
+          initialNeededResources(maxResources),
+          initialAllocatedResources(maxResources.size(), 0) {}
 
 bool Process::requestResources(const std::vector<int> &request, std::vector<Resource> &resources) {
     currentRequest = request;
@@ -53,6 +55,10 @@ int Process::getPriority() const {
 
 const std::vector<int> &Process::getMaxResources() const {
     return maxResources;
+}
+void Process::reset() {
+    allocatedResources = initialAllocatedResources;
+    neededResources = initialNeededResources;
 }
 
 void Process::interrupt() {
