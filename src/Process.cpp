@@ -6,6 +6,7 @@ Process::Process(int pid, const std::vector<int> &maxResources, int priority)
           allocatedResources(maxResources.size(), 0), neededResources(maxResources) {}
 
 bool Process::requestResources(const std::vector<int> &request, std::vector<Resource> &resources) {
+    currentRequest = request;
     for (size_t i = 0; i < request.size(); ++i) {
         if (request[i] > maxResources[i]) {
             std::cerr << "Error: Process " << pid << " requested more resources than it can hold" << std::endl;
@@ -26,6 +27,9 @@ bool Process::requestResources(const std::vector<int> &request, std::vector<Reso
     return true;
 }
 
+const std::vector<int> &Process::getCurrentRequest() const {
+    return currentRequest;
+}
 
 void Process::releaseResources(std::vector<Resource> &resources) {
     for (size_t i = 0; i < allocatedResources.size(); ++i) {

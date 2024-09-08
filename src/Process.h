@@ -17,6 +17,7 @@ private:
     std::string status;
     DeadlockDetector *deadlockDetector;
     bool isInterrupted = false;
+    std::vector<int> currentRequest;
 
 public:
     Process(int id, const std::vector<int> &maxResources, int priority);
@@ -30,8 +31,6 @@ public:
     int getPID() const;
 
     int getPriority() const;
-
-    const std::vector<int> &getMaxResources() const;
 
     const std::vector<int> &getAllocatedResources() const { return allocatedResources; }
 
@@ -48,4 +47,8 @@ public:
     void interrupt();
 
     void clearInterruption();
+
+    const std::vector<int> &getMaxResources() const;
+
+    const std::vector<int> &getCurrentRequest() const;
 };

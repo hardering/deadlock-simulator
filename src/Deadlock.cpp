@@ -15,7 +15,6 @@ void Deadlock::initializeResourcesAndProcesses() {
             Process(1, {2, 2, 2}, 2),
             Process(2, {3, 1, 3}, 3),
             Process(3, {2, 2, 4}, 1),
-            Process(4, {4, 3, 3}, 2)
     };
 
     request_01 = {2, 1, 2};
@@ -65,28 +64,28 @@ void Deadlock::createDeadlock() {
                                   QString::number(processes[0].getPID()),
                                   processes[0].getState(processes, resources),
                                   vectorToQString(processes[0].getAllocatedResources()),
-                                  vectorToQString(request_01),
+                                  vectorToQString(processes[0].getCurrentRequest()),
                           });
         emit setTableData(window->defaultTable,
                           {
                                   QString::number(processes[1].getPID()),
                                   processes[1].getState(processes, resources),
                                   vectorToQString(processes[1].getAllocatedResources()),
-                                  vectorToQString(request_02),
+                                  vectorToQString(processes[1].getCurrentRequest()),
                           });
         emit setTableData(window->defaultTable,
                           {
                                   QString::number(processes[2].getPID()),
                                   processes[2].getState(processes, resources),
                                   vectorToQString(processes[2].getAllocatedResources()),
-                                  vectorToQString(request_03),
+                                  vectorToQString(processes[2].getCurrentRequest()),
                           });
         emit setTableData(window->defaultTable,
                           {
                                   QString::number(processes[3].getPID()),
                                   processes[3].getState(processes, resources),
                                   vectorToQString(processes[3].getAllocatedResources()),
-                                  vectorToQString(request_04),
+                                  vectorToQString(processes[3].getCurrentRequest()),
                           });
 
     }
@@ -124,45 +123,25 @@ void Deadlock::runInterruptProcess() {
 
 void Deadlock::updateTable() {
     window->defaultTable->setRowCount(0);
+
+    for (int i = 0; i < processes.size(); ++i) {
+        auto &process = processes[i];
+        emit setTableData(window->defaultTable,
+                          {
+                                  QString::number(process.getPID()),
+                                  process.getState(processes, resources),
+                                  vectorToQString(process.getAllocatedResources()),
+                                  vectorToQString(process.getCurrentRequest())
+                          });
+    }
+
     bool deadlockExists = !deadlockDetector->isSystemInSafeState(processes, resources);
-
-    if (!window->isTableFilled(window->defaultTable)) {
-        emit setTableData(window->defaultTable,
-                          {
-                                  QString::number(processes[0].getPID()),
-                                  processes[0].getState(processes, resources),
-                                  vectorToQString(processes[0].getAllocatedResources()),
-                                  vectorToQString(request_01),
-                          });
-        emit setTableData(window->defaultTable,
-                          {
-                                  QString::number(processes[1].getPID()),
-                                  processes[1].getState(processes, resources),
-                                  vectorToQString(processes[1].getAllocatedResources()),
-                                  vectorToQString(request_02),
-                          });
-        emit setTableData(window->defaultTable,
-                          {
-                                  QString::number(processes[2].getPID()),
-                                  processes[2].getState(processes, resources),
-                                  vectorToQString(processes[2].getAllocatedResources()),
-                                  vectorToQString(request_03),
-                          });
-        emit setTableData(window->defaultTable,
-                          {
-                                  QString::number(processes[3].getPID()),
-                                  processes[3].getState(processes, resources),
-                                  vectorToQString(processes[3].getAllocatedResources()),
-                                  vectorToQString(request_04),
-                          });
-
-    }
-
     if (deadlockExists) {
-        std::cout << "Deadlock exists after interrupting the process." << std::endl;
+        std::cout << "Deadlock exists after updating the table." << std::endl;
     } else {
-        std::cout << "No deadlock present after intervention." << std::endl;
+        std::cout << "No deadlock after updating the table." << std::endl;
     }
+
 }
 
 void Deadlock::runAbortProcess() {
